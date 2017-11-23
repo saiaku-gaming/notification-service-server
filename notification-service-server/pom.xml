@@ -12,6 +12,13 @@
 		<groupId>com.valhallagame.valhalla</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
+	
+	<repositories>
+		<repository>
+			<id>myMavenRepo</id>
+			<url>${myMavenRepoReadUrl}</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<docker.image.prefix>saiaku</docker.image.prefix>
