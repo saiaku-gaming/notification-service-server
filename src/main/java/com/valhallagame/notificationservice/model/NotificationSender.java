@@ -32,7 +32,7 @@ public class NotificationSender {
 		System.out.println("send notification inner");
 		try {
 			System.out.println("send notification try");
-			if (socket == null || socket.isClosed()) {
+			if (socket == null) {
 				System.out.println("send notification null or close");
 				open();
 			} else if (System.currentTimeMillis() > (lastHeartbeat + FLATLINE_TIME_MS)) {
