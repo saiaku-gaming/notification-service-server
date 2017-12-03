@@ -52,6 +52,7 @@ public class NotificationSender {
 	}
 
 	public void open() throws UnknownHostException, IOException {
+		System.out.println("Trying To Open: " + address + ", Port: " + port);
 		socket = new Socket(address, port);
 		writer = new PrintWriter(socket.getOutputStream(), true);
 		heartbeatThread = new Thread(() -> {

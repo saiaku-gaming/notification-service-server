@@ -21,7 +21,7 @@ public class NotificationConsumer {
 	}
 
 	@RabbitListener(queues = { "#{partyCancelInviteQueue.name}", "#{partyAcceptInviteQueue.name}",
-			"#{partyDeclineInviteQueue.name}", "#{partyLeaveQueue.name}" })
+			"#{partyDeclineInviteQueue.name}", "#{partySentInviteQueue.name}", "#{partyLeaveQueue.name}" })
 	public void receivePartyNotificaiton(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.PARTYCHANGE, message.getReason(), message.getUsername());
 	}

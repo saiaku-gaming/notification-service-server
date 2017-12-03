@@ -97,6 +97,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue partySentInviteQueue() {
+		return new AnonymousQueue();
+	}
+
+	@Bean
 	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue partyCancelInviteQueue) {
 		return BindingBuilder.bind(partyCancelInviteQueue).to(partyExchange).with(RabbitMQRouting.Party.CANCEL_INVITE);
 	}
@@ -110,6 +115,11 @@ public class RabbitMQConfig {
 	public Binding bindingPartyDeclineInvite(DirectExchange partyExchange, Queue partyDeclineInviteQueue) {
 		return BindingBuilder.bind(partyDeclineInviteQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.DECLINE_INVITE);
+	}
+
+	@Bean
+	public Binding bindingPartySentInvite(DirectExchange partyExchange, Queue partySentInviteQueue) {
+		return BindingBuilder.bind(partySentInviteQueue).to(partyExchange).with(RabbitMQRouting.Party.SENT_INVITE);
 	}
 
 	@Bean
@@ -163,12 +173,12 @@ public class RabbitMQConfig {
 	public Binding bindingPersonOffline(DirectExchange personExchange, Queue personOfflineQueue) {
 		return BindingBuilder.bind(personOfflineQueue).to(personExchange).with(RabbitMQRouting.Person.OFFLINE);
 	}
-	
+
 	@Bean
 	public Jackson2JsonMessageConverter jacksonConverter() {
 		return new Jackson2JsonMessageConverter();
 	}
-	
+
 	@Bean
 	public SimpleRabbitListenerContainerFactory ContainerFactory() {
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
