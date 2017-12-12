@@ -2,6 +2,7 @@ package com.valhallagame.notificationservice.model;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -28,7 +29,7 @@ public class NotificationSender {
 		this.lastHeartbeat = 0L;
 	}
 
-	public void sendNotification(NotificationMessage message) {
+	public boolean sendNotification(NotificationMessage message) {
 		System.out.println("send notification inner");
 		try {
 			System.out.println("send notification try");
@@ -38,8 +39,13 @@ public class NotificationSender {
 			} else if (System.currentTimeMillis() > (lastHeartbeat + FLATLINE_TIME_MS)) {
 				System.out.println("flatline detected");
 				close();
-				System.out.println("reconnecting");
-				open();
+				System.out.println("reconnecting to: " + address + ":" + port);
+				try {
+					open();
+				} catch (ConnectException e) {
+					System.out.println("unable to reconnect to: " + address + ":" + port + ", unregistering listener");
+					return false;
+				}
 			}
 
 			System.out.println("send notification sending");
@@ -49,6 +55,8 @@ public class NotificationSender {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return true;
 	}
 
 	public void open() throws UnknownHostException, IOException {
