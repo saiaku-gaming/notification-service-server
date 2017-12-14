@@ -1,7 +1,8 @@
 package com.valhallagame.notificationservice.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,16 +32,17 @@ public class NotificationService {
 
 	public void addNotifications(NotificationType type, String reason, String username) {
 		System.out.println("Add Notification");
-		Iterator<NotificationSender> itr = notificationSenders.iterator();
-		while (itr.hasNext()) {
-			NotificationSender notificationSender = itr.next();
+		List<NotificationSender> sendersToRemove = new ArrayList<>();
+		for (NotificationSender notificationSender : notificationSenders) {
 			System.out.println("looping through senders");
 			NotificationMessage message = new NotificationMessage();
 			System.out.println("sending notification");
 			message.addNotification(username, type.name());
 			if (!notificationSender.sendNotification(message)) {
-				itr.remove();
+				sendersToRemove.add(notificationSender);
 			}
 		}
+
+		notificationSenders.removeAll(sendersToRemove);
 	}
 }
