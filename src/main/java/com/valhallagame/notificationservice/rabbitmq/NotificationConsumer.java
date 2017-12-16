@@ -31,4 +31,9 @@ public class NotificationConsumer {
 	public void receivePersonNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.PERSONCHANGE, message.getReason(), message.getUsername());
 	}
+
+	@RabbitListener(queues = { "#{chatReceivedMessageQueue.name}" })
+	public void receiveChatNotification(NotificationMessage message) {
+		notificationService.addNotifications(NotificationType.CHATCHANGE, message.getReason(), message.getUsername());
+	}
 }

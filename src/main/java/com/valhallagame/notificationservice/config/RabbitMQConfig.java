@@ -174,6 +174,24 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(personOfflineQueue).to(personExchange).with(RabbitMQRouting.Person.OFFLINE);
 	}
 
+	// RECEIVED_MESSAGE
+
+	@Bean
+	public DirectExchange chatExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.CHAT.name());
+	}
+
+	@Bean
+	public Queue chatReceivedMessageQueue() {
+		return new AnonymousQueue();
+	}
+
+	@Bean
+	public Binding bindingchatReceivedMessage(DirectExchange chatExchange, Queue chatReceivedMessageQueue) {
+		return BindingBuilder.bind(chatReceivedMessageQueue).to(chatExchange)
+				.with(RabbitMQRouting.Chat.RECEIVED_MESSAGE);
+	}
+
 	@Bean
 	public Jackson2JsonMessageConverter jacksonConverter() {
 		return new Jackson2JsonMessageConverter();
