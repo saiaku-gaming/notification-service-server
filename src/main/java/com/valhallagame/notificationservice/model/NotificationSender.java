@@ -46,6 +46,7 @@ public class NotificationSender {
 					System.out.println("unable to reconnect to: " + address + ":" + port + ", unregistering listener");
 					return false;
 				}
+				System.out.println("reconnection successful");
 			}
 
 			System.out.println("send notification sending");
@@ -78,6 +79,7 @@ public class NotificationSender {
 			}
 		});
 		heartbeatThread.start();
+		lastHeartbeat = System.currentTimeMillis();
 	}
 
 	public void close() {

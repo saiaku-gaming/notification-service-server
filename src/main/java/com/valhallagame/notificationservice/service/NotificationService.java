@@ -30,7 +30,7 @@ public class NotificationService {
 		}).collect(Collectors.toSet());
 	}
 
-	public void addNotifications(NotificationType type, String reason, String username) {
+	public synchronized void addNotifications(NotificationType type, String reason, String username) {
 		System.out.println("Add Notification");
 		List<NotificationSender> sendersToRemove = new ArrayList<>();
 		for (NotificationSender notificationSender : notificationSenders) {
