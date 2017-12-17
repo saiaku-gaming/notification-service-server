@@ -192,6 +192,24 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Chat.RECEIVED_MESSAGE);
 	}
 
+	// START_DUNGEON
+
+	@Bean
+	public DirectExchange instanceExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.INSTANCE.name());
+	}
+
+	@Bean
+	public Queue instanceDungeonActiveQueue() {
+		return new AnonymousQueue();
+	}
+
+	@Bean
+	public Binding bindingInstanceDungeonActive(DirectExchange instanceExchange, Queue instanceDungeonActiveQueue) {
+		return BindingBuilder.bind(instanceDungeonActiveQueue).to(instanceExchange)
+				.with(RabbitMQRouting.Instance.DUNGEON_ACTIVE);
+	}
+
 	@Bean
 	public Jackson2JsonMessageConverter jacksonConverter() {
 		return new Jackson2JsonMessageConverter();
