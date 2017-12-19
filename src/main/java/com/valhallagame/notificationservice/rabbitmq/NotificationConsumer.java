@@ -17,29 +17,33 @@ public class NotificationConsumer {
 	@RabbitListener(queues = { "#{friendAddQueue.name}", "#{friendRemoveQueue.name}",
 			"#{friendReceivedInviteQueue.name}", "#{friendDeclineInviteQueue.name}" })
 	public void receiveFriendNotification(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.FRIENDCHANGE, message.getReason(), message.getUsername());
+		notificationService.addNotifications(NotificationType.FRIENDCHANGE, message.getReason(), message.getUsername(),
+				message.getData());
 	}
 
 	@RabbitListener(queues = { "#{partyCancelInviteQueue.name}", "#{partyAcceptInviteQueue.name}",
 			"#{partyDeclineInviteQueue.name}", "#{partySentInviteQueue.name}", "#{partyLeaveQueue.name}" })
 	public void receivePartyNotificaiton(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.PARTYCHANGE, message.getReason(), message.getUsername());
+		notificationService.addNotifications(NotificationType.PARTYCHANGE, message.getReason(), message.getUsername(),
+				message.getData());
 	}
 
 	@RabbitListener(queues = { "#{personDeleteQueue.name}", "#{personCreateQueue.name}", "#{personOnlineQueue.name}",
 			"#{personOfflineQueue.name}" })
 	public void receivePersonNotification(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.PERSONCHANGE, message.getReason(), message.getUsername());
+		notificationService.addNotifications(NotificationType.PERSONCHANGE, message.getReason(), message.getUsername(),
+				message.getData());
 	}
 
 	@RabbitListener(queues = { "#{chatReceivedMessageQueue.name}" })
 	public void receiveChatNotification(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.CHATCHANGE, message.getReason(), message.getUsername());
+		notificationService.addNotifications(NotificationType.CHATCHANGE, message.getReason(), message.getUsername(),
+				message.getData());
 	}
 
 	@RabbitListener(queues = { "#{instanceDungeonActiveQueue.name}" })
 	public void receiveInstanceNotification(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.DUNGEONACTIVE, message.getReason(),
-				message.getUsername());
+		notificationService.addNotifications(NotificationType.DUNGEONACTIVE, message.getReason(), message.getUsername(),
+				message.getData());
 	}
 }

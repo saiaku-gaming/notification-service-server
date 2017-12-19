@@ -1,6 +1,7 @@
 package com.valhallagame.notificationservice.message;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class NotificationMessage {
 	private Set<NotificationData> notifications = new HashSet<>();
 
-	public void addNotification(String username, String notification) {
-		notifications.add(new NotificationData(username, notification));
+	public void addNotification(String username, String notification, Map<String, Object> data) {
+		notifications.add(new NotificationData(username, notification, data));
 	}
 
 	@Data
@@ -23,5 +24,6 @@ public class NotificationMessage {
 	public class NotificationData {
 		private String username;
 		private String notification;
+		private Map<String, Object> data;
 	}
 }
