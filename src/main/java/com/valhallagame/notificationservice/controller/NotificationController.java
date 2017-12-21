@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.valhallagame.common.JS;
 import com.valhallagame.notificationservice.message.NotificationListenerParameter;
-import com.valhallagame.notificationservice.model.NotificationSender;
+import com.valhallagame.notificationservice.message.UnregisterNotificationListenerParameter;
 import com.valhallagame.notificationservice.service.NotificationService;
 
 @Controller
@@ -23,24 +23,25 @@ public class NotificationController {
 
 	@RequestMapping(path = "/register-notification-listener", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> registerNotificationListener(@RequestBody NotificationListenerParameter params) {
-		if (params == null) {
+	public ResponseEntity<?> registerNotificationListener(@RequestBody NotificationListenerParameter input) {
+		if (input == null) {
 			return JS.message(HttpStatus.UNPROCESSABLE_ENTITY, "The parameter has to be set");
 		}
 
-		notificationService.registerNotificationListener(new NotificationSender(params.getAddress(), params.getPort()));
+		notificationService.registerNotificationListener(input.getGameSessionId(), input.getAddress(), input.getPort());
 
 		return JS.message(HttpStatus.OK, "listener registered");
 	}
 
 	@RequestMapping(path = "/unregister-notification-listener", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> unregisterNotificationListener(@RequestBody NotificationListenerParameter params) {
-		if (params == null) {
+	public ResponseEntity<?> unregisterNotificationListener(
+			@RequestBody UnregisterNotificationListenerParameter input) {
+		if (input == null) {
 			return JS.message(HttpStatus.UNPROCESSABLE_ENTITY, "The parameter has to be set");
 		}
 
-		notificationService.unregisterNotificationListener(params.getAddress(), params.getPort());
+		notificationService.unregisterNotificationListener(input.getGameSessionId());
 
 		return JS.message(HttpStatus.OK, "listener unregistered");
 	}

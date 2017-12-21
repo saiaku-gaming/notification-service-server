@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationListenerParameter {
+public class UnregisterNotificationListenerParameter {
 	private String gameSessionId;
-	private String address;
-	private int port;
 }
