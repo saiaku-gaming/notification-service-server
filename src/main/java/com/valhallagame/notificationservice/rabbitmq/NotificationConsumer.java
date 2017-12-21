@@ -35,7 +35,8 @@ public class NotificationConsumer {
 
 	@RabbitListener(queues = { "#{chatReceivedMessageQueue.name}" })
 	public void receiveChatNotification(NotificationMessage message) {
-		notificationService.addNotifications(NotificationType.CHATCHANGE, message.getUsername(), message.getData());
+		notificationService.addNotifications(NotificationType.CHAT_MESSAGE_RECEIVED, message.getUsername(),
+				message.getData());
 	}
 
 	@RabbitListener(queues = { "#{instanceDungeonActiveQueue.name}" })

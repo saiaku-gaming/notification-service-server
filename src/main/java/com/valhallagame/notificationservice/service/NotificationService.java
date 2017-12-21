@@ -91,7 +91,7 @@ public class NotificationService {
 		}
 	}
 
-	public /* synchronized */ void addNotifications(NotificationType type, String username, Map<String, Object> data) {
+	public synchronized void addNotifications(NotificationType type, String username, Map<String, Object> data) {
 		System.out.println("Add Notification");
 
 		String playerServerLocation = personServerLocations.get(username);
