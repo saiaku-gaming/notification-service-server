@@ -28,6 +28,12 @@ public class NotificationConsumer {
 		notificationService.addNotifications(NotificationType.PARTYCHANGE, message.getUsername(), message.getData());
 	}
 
+	@RabbitListener(queues = { "#{notificationPartyReceivedInviteQueue.name}" })
+	public void receivedInvitePartyNotification(NotificationMessage message) {
+		notificationService.addNotifications(NotificationType.PARTY_RECEIVED_INVITE, message.getUsername(),
+				message.getData());
+	}
+
 	@RabbitListener(queues = { "#{notificationPersonDeleteQueue.name}", "#{notificationPersonCreateQueue.name}",
 			"#{notificationPersonOnlineQueue.name}", "#{notificationPersonOfflineQueue.name}" })
 	public void receivePersonNotification(NotificationMessage message) {

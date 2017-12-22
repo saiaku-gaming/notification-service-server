@@ -72,7 +72,7 @@ public class RabbitMQConfig {
 	}
 
 	// CANCEL_INVITE, ACCEPT_INVITE, DECLINE_INVITE, LEAVE, KICK_FROM_PARTY,
-	// PROMOTE_LEADER
+	// PROMOTE_LEADER, RECEIVED_INVITE
 
 	@Bean
 	public DirectExchange partyExchange() {
@@ -115,6 +115,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue notificationPartyReceivedInviteQueue() {
+		return new Queue("notificationPartyReceivedInviteQueue");
+	}
+
+	@Bean
 	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue notificationPartyCancelInviteQueue) {
 		return BindingBuilder.bind(notificationPartyCancelInviteQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.CANCEL_INVITE);
@@ -153,6 +158,13 @@ public class RabbitMQConfig {
 	public Binding bindingPartyPromoteLeader(DirectExchange partyExchange, Queue notificationPartyPromoteLeaderQueue) {
 		return BindingBuilder.bind(notificationPartyPromoteLeaderQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.PROMOTE_LEADER);
+	}
+
+	@Bean
+	public Binding bindingPartyReceivedInvite(DirectExchange partyExchange,
+			Queue notificationPartyReceivedInviteQueue) {
+		return BindingBuilder.bind(notificationPartyReceivedInviteQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.RECEIVED_INVITE);
 	}
 
 	// DELETE, CREATE, ONLINE, OFFLINE
