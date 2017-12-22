@@ -1,8 +1,10 @@
 package com.valhallagame.notificationservice.service;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -114,5 +116,34 @@ public class NotificationService {
 		if (!notificationSender.sendNotification(message)) {
 			notificationSenders.remove(playerServerLocation);
 		}
+	}
+
+	public synchronized void syncSendersAndLocations() throws IOException {
+		RestResponse<List<Instance>> allInstances = instanceServiceClient.getAllInstances();
+		if (!allInstances.isOk()) {
+			System.err.println("Unable to get all instances status code: " + allInstances.getStatusCode()
+					+ ", message: " + allInstances.getErrorMessage());
+		}
+
+		// ConcurrentMap<String, String> updatedPersonLocations = new
+		// ConcurrentHashMap<>();
+		Set<String> missingInstances = new HashSet<>();
+		missingInstances.addAll(notificationSenders.keySet());
+
+		for (Instance instance : allInstances.getResponse().get()) {
+			if (!missingInstances.remove(instance.getId())) {
+				registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
+			}
+
+			// for (String member : instance.getMembers()) {
+			// updatedPersonLocations.put(member, instance.getId());
+			// }
+		}
+
+		for (String missingInstance : missingInstances) {
+			unregisterNotificationListener(missingInstance);
+		}
+
+		// personServerLocations = updatedPersonLocations;
 	}
 }
