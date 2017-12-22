@@ -1,6 +1,5 @@
 package com.valhallagame.notificationservice.config;
 
-import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -28,44 +27,47 @@ public class RabbitMQConfig {
 
 	// ADD, REMOVE, RECEIVED_INVITE, DECLINE_INVITE
 	@Bean
-	public Queue friendAddQueue() {
-		return new AnonymousQueue();
+	public Queue notificationFriendAddQueue() {
+		return new Queue("notificationFriendAddQueue");
 	}
 
 	@Bean
-	public Queue friendRemoveQueue() {
-		return new AnonymousQueue();
+	public Queue notificationFriendRemoveQueue() {
+		return new Queue("notificationFriendRemoveQueue");
 	}
 
 	@Bean
-	public Queue friendReceivedInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationFriendReceivedInviteQueue() {
+		return new Queue("notificationFriendReceivedInviteQueue");
 	}
 
 	@Bean
-	public Queue friendDeclineInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationFriendDeclineInviteQueue() {
+		return new Queue("notificationFriendDeclineInviteQueue");
 	}
 
 	@Bean
-	public Binding bindingFriendAdd(DirectExchange friendExchange, Queue friendAddQueue) {
-		return BindingBuilder.bind(friendAddQueue).to(friendExchange).with(RabbitMQRouting.Friend.ADD);
+	public Binding bindingFriendAdd(DirectExchange friendExchange, Queue notificationFriendAddQueue) {
+		return BindingBuilder.bind(notificationFriendAddQueue).to(friendExchange).with(RabbitMQRouting.Friend.ADD);
 	}
 
 	@Bean
-	public Binding bindingFriendRemove(DirectExchange friendExchange, Queue friendRemoveQueue) {
-		return BindingBuilder.bind(friendRemoveQueue).to(friendExchange).with(RabbitMQRouting.Friend.REMOVE);
+	public Binding bindingFriendRemove(DirectExchange friendExchange, Queue notificationFriendRemoveQueue) {
+		return BindingBuilder.bind(notificationFriendRemoveQueue).to(friendExchange)
+				.with(RabbitMQRouting.Friend.REMOVE);
 	}
 
 	@Bean
-	public Binding bindingFriendReceivedInvite(DirectExchange friendExchange, Queue friendReceivedInviteQueue) {
-		return BindingBuilder.bind(friendReceivedInviteQueue).to(friendExchange)
+	public Binding bindingFriendReceivedInvite(DirectExchange friendExchange,
+			Queue notificationFriendReceivedInviteQueue) {
+		return BindingBuilder.bind(notificationFriendReceivedInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.RECEIVED_INVITE);
 	}
 
 	@Bean
-	public Binding bindingFriendDeclineInvite(DirectExchange friendExchange, Queue friendDeclineInviteQueue) {
-		return BindingBuilder.bind(friendDeclineInviteQueue).to(friendExchange)
+	public Binding bindingFriendDeclineInvite(DirectExchange friendExchange,
+			Queue notificationFriendDeclineInviteQueue) {
+		return BindingBuilder.bind(notificationFriendDeclineInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.DECLINE_INVITE);
 	}
 
@@ -78,75 +80,78 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Queue partyCancelInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyCancelInviteQueue() {
+		return new Queue("notificationPartyCancelInviteQueue");
 	}
 
 	@Bean
-	public Queue partyAcceptInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyAcceptInviteQueue() {
+		return new Queue("notificationPartyAcceptInviteQueue");
 	}
 
 	@Bean
-	public Queue partyDeclineInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyDeclineInviteQueue() {
+		return new Queue("notificationPartyDeclineInviteQueue");
 	}
 
 	@Bean
-	public Queue partyLeaveQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyLeaveQueue() {
+		return new Queue("notificationPartyLeaveQueue");
 	}
 
 	@Bean
-	public Queue partySentInviteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartySentInviteQueue() {
+		return new Queue("notificationPartySentInviteQueue");
 	}
 
 	@Bean
-	public Queue partyKickFromPartyQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyKickFromPartyQueue() {
+		return new Queue("notificationPartyKickFromPartyQueue");
 	}
 
 	@Bean
-	public Queue partyPromoteLeaderQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPartyPromoteLeaderQueue() {
+		return new Queue("notificationPartyPromoteLeaderQueue");
 	}
 
 	@Bean
-	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue partyCancelInviteQueue) {
-		return BindingBuilder.bind(partyCancelInviteQueue).to(partyExchange).with(RabbitMQRouting.Party.CANCEL_INVITE);
+	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue notificationPartyCancelInviteQueue) {
+		return BindingBuilder.bind(notificationPartyCancelInviteQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.CANCEL_INVITE);
 	}
 
 	@Bean
-	public Binding bindingPartyAcceptInvite(DirectExchange partyExchange, Queue partyAcceptInviteQueue) {
-		return BindingBuilder.bind(partyAcceptInviteQueue).to(partyExchange).with(RabbitMQRouting.Party.ACCEPT_INVITE);
+	public Binding bindingPartyAcceptInvite(DirectExchange partyExchange, Queue notificationPartyAcceptInviteQueue) {
+		return BindingBuilder.bind(notificationPartyAcceptInviteQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.ACCEPT_INVITE);
 	}
 
 	@Bean
-	public Binding bindingPartyDeclineInvite(DirectExchange partyExchange, Queue partyDeclineInviteQueue) {
-		return BindingBuilder.bind(partyDeclineInviteQueue).to(partyExchange)
+	public Binding bindingPartyDeclineInvite(DirectExchange partyExchange, Queue notificationPartyDeclineInviteQueue) {
+		return BindingBuilder.bind(notificationPartyDeclineInviteQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.DECLINE_INVITE);
 	}
 
 	@Bean
-	public Binding bindingPartySentInvite(DirectExchange partyExchange, Queue partySentInviteQueue) {
-		return BindingBuilder.bind(partySentInviteQueue).to(partyExchange).with(RabbitMQRouting.Party.SENT_INVITE);
+	public Binding bindingPartySentInvite(DirectExchange partyExchange, Queue notificationPartySentInviteQueue) {
+		return BindingBuilder.bind(notificationPartySentInviteQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.SENT_INVITE);
 	}
 
 	@Bean
-	public Binding bindingPartyLeave(DirectExchange partyExchange, Queue partyLeaveQueue) {
-		return BindingBuilder.bind(partyLeaveQueue).to(partyExchange).with(RabbitMQRouting.Party.LEAVE);
+	public Binding bindingPartyLeave(DirectExchange partyExchange, Queue notificationPartyLeaveQueue) {
+		return BindingBuilder.bind(notificationPartyLeaveQueue).to(partyExchange).with(RabbitMQRouting.Party.LEAVE);
 	}
 
 	@Bean
-	public Binding bindingPartyKickFromParty(DirectExchange partyExchange, Queue partyKickFromPartyQueue) {
-		return BindingBuilder.bind(partyKickFromPartyQueue).to(partyExchange)
+	public Binding bindingPartyKickFromParty(DirectExchange partyExchange, Queue notificationPartyKickFromPartyQueue) {
+		return BindingBuilder.bind(notificationPartyKickFromPartyQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.KICK_FROM_PARTY);
 	}
 
 	@Bean
-	public Binding bindingPartyPromoteLeader(DirectExchange partyExchange, Queue partyPromoteLeaderQueue) {
-		return BindingBuilder.bind(partyPromoteLeaderQueue).to(partyExchange)
+	public Binding bindingPartyPromoteLeader(DirectExchange partyExchange, Queue notificationPartyPromoteLeaderQueue) {
+		return BindingBuilder.bind(notificationPartyPromoteLeaderQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.PROMOTE_LEADER);
 	}
 
@@ -158,43 +163,47 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Queue personDeleteQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPersonDeleteQueue() {
+		return new Queue("notificationPersonDeleteQueue");
 	}
 
 	@Bean
-	public Queue personCreateQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPersonCreateQueue() {
+		return new Queue("notificationPersonCreateQueue");
 	}
 
 	@Bean
-	public Queue personOnlineQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPersonOnlineQueue() {
+		return new Queue("notificationPersonOnlineQueue");
 	}
 
 	@Bean
-	public Queue personOfflineQueue() {
-		return new AnonymousQueue();
+	public Queue notificationPersonOfflineQueue() {
+		return new Queue("notificationPersonOfflineQueue");
 	}
 
 	@Bean
-	public Binding bindingPersonDelete(DirectExchange personExchange, Queue personDeleteQueue) {
-		return BindingBuilder.bind(personDeleteQueue).to(personExchange).with(RabbitMQRouting.Person.DELETE);
+	public Binding bindingPersonDelete(DirectExchange personExchange, Queue notificationPersonDeleteQueue) {
+		return BindingBuilder.bind(notificationPersonDeleteQueue).to(personExchange)
+				.with(RabbitMQRouting.Person.DELETE);
 	}
 
 	@Bean
-	public Binding bindingPersonCreate(DirectExchange personExchange, Queue personCreateQueue) {
-		return BindingBuilder.bind(personCreateQueue).to(personExchange).with(RabbitMQRouting.Person.CREATE);
+	public Binding bindingPersonCreate(DirectExchange personExchange, Queue notificationPersonCreateQueue) {
+		return BindingBuilder.bind(notificationPersonCreateQueue).to(personExchange)
+				.with(RabbitMQRouting.Person.CREATE);
 	}
 
 	@Bean
-	public Binding bindingPersonOnline(DirectExchange personExchange, Queue personOnlineQueue) {
-		return BindingBuilder.bind(personOnlineQueue).to(personExchange).with(RabbitMQRouting.Person.ONLINE);
+	public Binding bindingPersonOnline(DirectExchange personExchange, Queue notificationPersonOnlineQueue) {
+		return BindingBuilder.bind(notificationPersonOnlineQueue).to(personExchange)
+				.with(RabbitMQRouting.Person.ONLINE);
 	}
 
 	@Bean
-	public Binding bindingPersonOffline(DirectExchange personExchange, Queue personOfflineQueue) {
-		return BindingBuilder.bind(personOfflineQueue).to(personExchange).with(RabbitMQRouting.Person.OFFLINE);
+	public Binding bindingPersonOffline(DirectExchange personExchange, Queue notificationPersonOfflineQueue) {
+		return BindingBuilder.bind(notificationPersonOfflineQueue).to(personExchange)
+				.with(RabbitMQRouting.Person.OFFLINE);
 	}
 
 	// RECEIVED_MESSAGE
@@ -205,13 +214,13 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Queue chatReceivedMessageQueue() {
-		return new AnonymousQueue();
+	public Queue notificationChatReceivedMessageQueue() {
+		return new Queue("notificationChatReceivedMessageQueue");
 	}
 
 	@Bean
-	public Binding bindingchatReceivedMessage(DirectExchange chatExchange, Queue chatReceivedMessageQueue) {
-		return BindingBuilder.bind(chatReceivedMessageQueue).to(chatExchange)
+	public Binding bindingchatReceivedMessage(DirectExchange chatExchange, Queue notificationChatReceivedMessageQueue) {
+		return BindingBuilder.bind(notificationChatReceivedMessageQueue).to(chatExchange)
 				.with(RabbitMQRouting.Chat.RECEIVED_MESSAGE);
 	}
 
@@ -223,35 +232,38 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Queue instanceDungeonActiveQueue() {
-		return new AnonymousQueue();
+	public Queue notificationInstanceDungeonActiveQueue() {
+		return new Queue("notificationInstanceDungeonActiveQueue");
 	}
 
 	@Bean
-	public Queue instancePersonLoginQueue() {
-		return new AnonymousQueue();
+	public Queue notificationInstancePersonLoginQueue() {
+		return new Queue("notificationInstancePersonLoginQueue");
 	}
 
 	@Bean
-	public Queue instancePersonLogoutQueue() {
-		return new AnonymousQueue();
+	public Queue notificationInstancePersonLogoutQueue() {
+		return new Queue("notificationInstancePersonLogoutQueue");
 	}
 
 	@Bean
-	public Binding bindingInstanceDungeonActive(DirectExchange instanceExchange, Queue instanceDungeonActiveQueue) {
-		return BindingBuilder.bind(instanceDungeonActiveQueue).to(instanceExchange)
+	public Binding bindingInstanceDungeonActive(DirectExchange instanceExchange,
+			Queue notificationInstanceDungeonActiveQueue) {
+		return BindingBuilder.bind(notificationInstanceDungeonActiveQueue).to(instanceExchange)
 				.with(RabbitMQRouting.Instance.DUNGEON_ACTIVE);
 	}
 
 	@Bean
-	public Binding bindingInstancePersonLogin(DirectExchange instanceExchange, Queue instancePersonLoginQueue) {
-		return BindingBuilder.bind(instancePersonLoginQueue).to(instanceExchange)
+	public Binding bindingInstancePersonLogin(DirectExchange instanceExchange,
+			Queue notificationInstancePersonLoginQueue) {
+		return BindingBuilder.bind(notificationInstancePersonLoginQueue).to(instanceExchange)
 				.with(RabbitMQRouting.Instance.PERSON_LOGIN);
 	}
 
 	@Bean
-	public Binding bindingInstancePersonLogout(DirectExchange instanceExchange, Queue instancePersonLogoutQueue) {
-		return BindingBuilder.bind(instancePersonLogoutQueue).to(instanceExchange)
+	public Binding bindingInstancePersonLogout(DirectExchange instanceExchange,
+			Queue notificationInstancePersonLogoutQueue) {
+		return BindingBuilder.bind(notificationInstancePersonLogoutQueue).to(instanceExchange)
 				.with(RabbitMQRouting.Instance.PERSON_LOGOUT);
 	}
 

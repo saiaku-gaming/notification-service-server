@@ -14,42 +14,43 @@ public class NotificationConsumer {
 	@Autowired
 	private NotificationService notificationService;
 
-	@RabbitListener(queues = { "#{friendAddQueue.name}", "#{friendRemoveQueue.name}",
-			"#{friendReceivedInviteQueue.name}", "#{friendDeclineInviteQueue.name}" })
+	@RabbitListener(queues = { "#{notificationFriendAddQueue.name}", "#{notificationFriendRemoveQueue.name}",
+			"#{notificationFriendReceivedInviteQueue.name}", "#{notificationFriendDeclineInviteQueue.name}" })
 	public void receiveFriendNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.FRIENDCHANGE, message.getUsername(), message.getData());
 	}
 
-	@RabbitListener(queues = { "#{partyCancelInviteQueue.name}", "#{partyAcceptInviteQueue.name}",
-			"#{partyDeclineInviteQueue.name}", "#{partySentInviteQueue.name}", "#{partyLeaveQueue.name}",
-			"#{partyKickFromPartyQueue.name}", "#{partyPromoteLeaderQueue.name}" })
+	@RabbitListener(queues = { "#{notificationPartyCancelInviteQueue.name}",
+			"#{notificationPartyAcceptInviteQueue.name}", "#{notificationPartyDeclineInviteQueue.name}",
+			"#{notificationPartySentInviteQueue.name}", "#{notificationPartyLeaveQueue.name}",
+			"#{notificationPartyKickFromPartyQueue.name}", "#{notificationPartyPromoteLeaderQueue.name}" })
 	public void receivePartyNotificaiton(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.PARTYCHANGE, message.getUsername(), message.getData());
 	}
 
-	@RabbitListener(queues = { "#{personDeleteQueue.name}", "#{personCreateQueue.name}", "#{personOnlineQueue.name}",
-			"#{personOfflineQueue.name}" })
+	@RabbitListener(queues = { "#{notificationPersonDeleteQueue.name}", "#{notificationPersonCreateQueue.name}",
+			"#{notificationPersonOnlineQueue.name}", "#{notificationPersonOfflineQueue.name}" })
 	public void receivePersonNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.PERSONCHANGE, message.getUsername(), message.getData());
 	}
 
-	@RabbitListener(queues = { "#{chatReceivedMessageQueue.name}" })
+	@RabbitListener(queues = { "#{notificationChatReceivedMessageQueue.name}" })
 	public void receiveChatNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.CHAT_MESSAGE_RECEIVED, message.getUsername(),
 				message.getData());
 	}
 
-	@RabbitListener(queues = { "#{instanceDungeonActiveQueue.name}" })
+	@RabbitListener(queues = { "#{notificationInstanceDungeonActiveQueue.name}" })
 	public void receiveInstanceNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.DUNGEONACTIVE, message.getUsername(), message.getData());
 	}
 
-	@RabbitListener(queues = { "#{instancePersonLoginQueue.name}" })
+	@RabbitListener(queues = { "#{notificationInstancePersonLoginQueue.name}" })
 	public void receivePersonLoginNotification(NotificationMessage message) {
 		notificationService.addPersonServerLocation(message.getUsername(), message.getData());
 	}
 
-	@RabbitListener(queues = { "#{instancePersonLogoutQueue.name}" })
+	@RabbitListener(queues = { "#{notificationInstancePersonLogoutQueue.name}" })
 	public void receivePersonLogoutNotification(NotificationMessage message) {
 		notificationService.removePersonServerLocation(message.getUsername());
 	}
