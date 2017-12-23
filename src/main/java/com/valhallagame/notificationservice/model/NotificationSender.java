@@ -27,6 +27,14 @@ public class NotificationSender {
 		this.address = address;
 		this.port = port;
 		this.lastHeartbeat = 0L;
+
+		try {
+			open();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean sendNotification(NotificationMessage message) {
