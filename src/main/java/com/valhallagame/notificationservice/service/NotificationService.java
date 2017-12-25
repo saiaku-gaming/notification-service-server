@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,9 @@ import com.valhallagame.notificationservice.model.RegisteredServer;
 
 @Service
 public class NotificationService {
+
+	private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
+
 	private static InstanceServiceClient instanceServiceClient = InstanceServiceClient.get();
 
 	private static ConcurrentMap<String, NotificationSender> notificationSenders = new ConcurrentHashMap<>();
@@ -34,14 +40,15 @@ public class NotificationService {
 	@PostConstruct
 	public void init() {
 		try {
-			RestResponse<List<Instance>> allInstances = instanceServiceClient.getAllInstances();
-			if (!allInstances.isOk()) {
-				System.err.println("Get all instance did not work: " + allInstances.getStatusCode() + ", "
-						+ allInstances.getErrorMessage());
+			RestResponse<List<Instance>> allInstancesResp = instanceServiceClient.getAllInstances();
+			Optional<List<Instance>> allInstancesOpt = allInstancesResp.get();
+			if (!allInstancesOpt.isPresent()) {
+				logger.error("Get all instance did not work: " + allInstancesResp.getStatusCode() + ", "
+						+ allInstancesResp.getErrorMessage());
 				return;
 			}
 
-			List<Instance> instances = allInstances.getResponse().get();
+			List<Instance> instances = allInstancesOpt.get();
 			for (Instance instance : instances) {
 				for (String member : instance.getMembers()) {
 					personServerLocations.put(member, instance.getId());
@@ -49,7 +56,7 @@ public class NotificationService {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Something gon' wrong", e);
 		}
 
 		List<RegisteredServer> allRegisteredServers = registeredServerService.getAllRegisteredServers();
@@ -64,8 +71,8 @@ public class NotificationService {
 		String gameSessionId = (String) data.get("gameSessionId");
 
 		if (gameSessionId == null) {
-			System.err.println("Got person login notification with null gameSessionId for username: " + username
-					+ " with data: " + data);
+			logger.error("Got person login notification with null gameSessionId for username: {} with data: {}",
+					username, data);
 			return;
 		}
 		personServerLocations.put(username, gameSessionId);
@@ -77,7 +84,7 @@ public class NotificationService {
 
 	public void registerNotificationListener(String gameSessionId, String address, Integer port) {
 		RegisteredServer registeredServer = new RegisteredServer(gameSessionId, address, port);
-		registeredServer = registeredServerService.saveRegisteredServer(registeredServer);
+		registeredServerService.saveRegisteredServer(registeredServer);
 
 		NotificationSender notificationSender = new NotificationSender(address, port);
 
@@ -94,12 +101,12 @@ public class NotificationService {
 	}
 
 	public synchronized void addNotifications(NotificationType type, String username, Map<String, Object> data) {
-		System.out.println("Add Notification");
+		logger.info("Add Notification");
 
 		String playerServerLocation = personServerLocations.get(username);
 
 		if (playerServerLocation == null) {
-			System.out.println("Could not find " + username + " in a server");
+			logger.info("Could not find {} in a server", username);
 			// TODO do some shit...
 			return;
 		}
@@ -107,7 +114,7 @@ public class NotificationService {
 		NotificationSender notificationSender = notificationSenders.get(playerServerLocation);
 
 		if (notificationSender == null) {
-			System.err.println("The server " + playerServerLocation + " does not have a registered listener");
+			logger.error("The server {} does not have a registered listener", playerServerLocation);
 			return;
 		}
 
@@ -119,31 +126,24 @@ public class NotificationService {
 	}
 
 	public synchronized void syncSendersAndLocations() throws IOException {
-		RestResponse<List<Instance>> allInstances = instanceServiceClient.getAllInstances();
-		if (!allInstances.isOk()) {
-			System.err.println("Unable to get all instances status code: " + allInstances.getStatusCode()
-					+ ", message: " + allInstances.getErrorMessage());
-		}
-
-		// ConcurrentMap<String, String> updatedPersonLocations = new
-		// ConcurrentHashMap<>();
 		Set<String> missingInstances = new HashSet<>();
 		missingInstances.addAll(notificationSenders.keySet());
-
-		for (Instance instance : allInstances.getResponse().get()) {
-			if (!missingInstances.remove(instance.getId())) {
-				registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
+		
+		RestResponse<List<Instance>> allInstancesResp = instanceServiceClient.getAllInstances();
+		Optional<List<Instance>> allInstancesOpt = allInstancesResp.get();
+		if (allInstancesOpt.isPresent()) {
+			for (Instance instance : allInstancesOpt.get()) {
+				if (!missingInstances.remove(instance.getId())) {
+					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
+				}
 			}
-
-			// for (String member : instance.getMembers()) {
-			// updatedPersonLocations.put(member, instance.getId());
-			// }
+		} else {
+			logger.error("Unable to get all instances status code: {}, message: {}", allInstancesResp.getStatusCode(),
+					allInstancesResp.getErrorMessage());
 		}
 
 		for (String missingInstance : missingInstances) {
 			unregisterNotificationListener(missingInstance);
 		}
-
-		// personServerLocations = updatedPersonLocations;
 	}
 }

@@ -18,8 +18,6 @@ public class App {
 
 	@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer() {
-		return (container -> {
-			container.setPort(DefaultServicePortMappings.NOTIFICATION_SERVICE_PORT);
-		});
+		return (container -> container.setPort(DefaultServicePortMappings.NOTIFICATION_SERVICE_PORT));
 	}
 }

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.valhallagame.notificationservice.message.NotificationMessage;
@@ -13,6 +15,11 @@ import lombok.Data;
 
 @Data
 public class NotificationSender {
+	
+	private static final String SOCKET_FAILURE = "Socket failure";
+
+	private static final Logger logger = LoggerFactory.getLogger(NotificationSender.class);
+	
 	private static final long FLATLINE_TIME_MS = 2000L;
 
 	private String address;
@@ -30,60 +37,53 @@ public class NotificationSender {
 
 		try {
 			open();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Failed to open", e);
 		}
 	}
 
 	public boolean sendNotification(NotificationMessage message) {
-		System.out.println("send notification inner");
+		logger.info("send notification inner");
 		try {
-			System.out.println("send notification try");
+			logger.info("send notification try");
 			if (socket == null) {
-				System.out.println("send notification null or close");
+				logger.info("send notification null or close");
 				open();
 			} else if (System.currentTimeMillis() > (lastHeartbeat + FLATLINE_TIME_MS)) {
-				System.out.println("flatline detected");
+				logger.info("flatline detected");
 				close();
-				System.out.println("reconnecting to: " + address + ":" + port);
-				try {
-					open();
-				} catch (ConnectException e) {
-					System.out.println("unable to reconnect to: " + address + ":" + port + ", unregistering listener");
-					return false;
-				}
-				System.out.println("reconnection successful");
+				logger.info("reconnecting to: %s:%s", address, port);
+				open();
+				logger.info("reconnection successful");
 			}
 
-			System.out.println("send notification sending");
+			logger.info("send notification sending");
 			writer.println(new ObjectMapper().writeValueAsString(message));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
+		} catch (ConnectException e) {
+			logger.info("unable to reconnect to: %s:%s, unregistering listener", address, port);
+			return false;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(SOCKET_FAILURE, e);
+			return false;
 		}
 
 		return true;
 	}
 
-	public void open() throws UnknownHostException, IOException {
-		System.out.println("Trying To Open: " + address + ", Port: " + port);
+	public void open() throws IOException {
+		logger.info("Trying To Open: %s:%s", address, port);
 		socket = new Socket(address, port);
 		writer = new PrintWriter(socket.getOutputStream(), true);
 		heartbeatThread = new Thread(() -> {
 			try {
 				while (!heartbeatThread.isInterrupted()) {
-					// System.out.println("listening for heartbeat");
 					int beat = socket.getInputStream().read();
-					// System.out.println("heartbeat received: " + beat);
 					if (beat != -1) {
 						lastHeartbeat = System.currentTimeMillis();
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(SOCKET_FAILURE, e);
 			}
 		});
 		heartbeatThread.start();
@@ -101,7 +101,7 @@ public class NotificationSender {
 			try {
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(SOCKET_FAILURE, e);
 			}
 		}
 	}
@@ -125,11 +125,7 @@ public class NotificationSender {
 
 	@Override
 	public int hashCode() {
-		int result = 23;
-
-		result = 37 * (address == null ? 0 : address.hashCode());
-		result = 37 * port;
-
-		return result;
+		return 37 * (address == null ? 0 : address.hashCode()) * port;
 	}
+	
 }
