@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.valhallagame.common.RestResponse;
 import com.valhallagame.instanceserviceclient.InstanceServiceClient;
-import com.valhallagame.instanceserviceclient.message.Instance;
+import com.valhallagame.instanceserviceclient.model.InstanceData;
 import com.valhallagame.notificationservice.message.NotificationMessage;
 import com.valhallagame.notificationservice.model.NotificationSender;
 import com.valhallagame.notificationservice.model.NotificationType;
@@ -40,16 +40,16 @@ public class NotificationService {
 	@PostConstruct
 	public void init() {
 		try {
-			RestResponse<List<Instance>> allInstancesResp = instanceServiceClient.getAllInstances();
-			Optional<List<Instance>> allInstancesOpt = allInstancesResp.get();
+			RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
+			Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
 			if (!allInstancesOpt.isPresent()) {
 				logger.error("Get all instance did not work: " + allInstancesResp.getStatusCode() + ", "
 						+ allInstancesResp.getErrorMessage());
 				return;
 			}
 
-			List<Instance> instances = allInstancesOpt.get();
-			for (Instance instance : instances) {
+			List<InstanceData> instances = allInstancesOpt.get();
+			for (InstanceData instance : instances) {
 				for (String member : instance.getMembers()) {
 					personServerLocations.put(member, instance.getId());
 				}
@@ -129,10 +129,10 @@ public class NotificationService {
 		Set<String> missingInstances = new HashSet<>();
 		missingInstances.addAll(notificationSenders.keySet());
 		
-		RestResponse<List<Instance>> allInstancesResp = instanceServiceClient.getAllInstances();
-		Optional<List<Instance>> allInstancesOpt = allInstancesResp.get();
+		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
+		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
 		if (allInstancesOpt.isPresent()) {
-			for (Instance instance : allInstancesOpt.get()) {
+			for (InstanceData instance : allInstancesOpt.get()) {
 				if (!missingInstances.remove(instance.getId())) {
 					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
 				}

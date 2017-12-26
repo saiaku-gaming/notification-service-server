@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.valhallagame.common.JS;
 import com.valhallagame.notificationservice.service.NotificationService;
-import com.valhallagame.notificationserviceclient.model.NotificationListenerParameter;
-import com.valhallagame.notificationserviceclient.model.UnregisterNotificationListenerParameter;
+import com.valhallagame.notificationserviceclient.message.NotificationListenerParameter;
+import com.valhallagame.notificationserviceclient.message.UnregisterNotificationListenerParameter;
 
 @Controller
 @RequestMapping(path = "/v1/notification")
