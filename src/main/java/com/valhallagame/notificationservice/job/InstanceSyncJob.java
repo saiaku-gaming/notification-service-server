@@ -14,17 +14,19 @@ import com.valhallagame.notificationservice.service.NotificationService;
 public class InstanceSyncJob {
 
 	private static final Logger logger = LoggerFactory.getLogger(InstanceSyncJob.class);
-	
+
 	@Autowired
 	private NotificationService notificationService;
 
 	@Scheduled(fixedRate = 60000, initialDelay = 5000)
 	public void execute() {
+		logger.info("Syncing with instance service started...");
 		try {
 			notificationService.syncSendersAndLocations();
 		} catch (IOException e) {
 			logger.error("Could not sync senders and location", e);
 		}
+		logger.info("Syncing with instance service finished");
 	}
 
 }
