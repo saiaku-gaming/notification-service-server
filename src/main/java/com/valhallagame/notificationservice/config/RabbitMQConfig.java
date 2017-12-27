@@ -25,7 +25,7 @@ public class RabbitMQConfig {
 		return new DirectExchange(RabbitMQRouting.Exchange.FRIEND.name());
 	}
 
-	// ADD, REMOVE, RECEIVED_INVITE, DECLINE_INVITE
+	// ADD, REMOVE, RECEIVED_INVITE, DECLINE_INVITE, SENT_INVITE
 	@Bean
 	public Queue notificationFriendAddQueue() {
 		return new Queue("notificationFriendAddQueue");
@@ -44,6 +44,11 @@ public class RabbitMQConfig {
 	@Bean
 	public Queue notificationFriendDeclineInviteQueue() {
 		return new Queue("notificationFriendDeclineInviteQueue");
+	}
+
+	@Bean
+	public Queue notificationFriendSentInviteQueue() {
+		return new Queue("notificationFriendSentInviteQueue");
 	}
 
 	@Bean
@@ -69,6 +74,12 @@ public class RabbitMQConfig {
 			Queue notificationFriendDeclineInviteQueue) {
 		return BindingBuilder.bind(notificationFriendDeclineInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.DECLINE_INVITE);
+	}
+
+	@Bean
+	public Binding bindingFriendSentInvite(DirectExchange friendExchange, Queue notificationFriendSentInviteQueue) {
+		return BindingBuilder.bind(notificationFriendSentInviteQueue).to(friendExchange)
+				.with(RabbitMQRouting.Friend.SENT_INVITE);
 	}
 
 	// CANCEL_INVITE, ACCEPT_INVITE, DECLINE_INVITE, LEAVE, KICK_FROM_PARTY,

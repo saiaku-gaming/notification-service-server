@@ -15,7 +15,7 @@ public class NotificationConsumer {
 	private NotificationService notificationService;
 
 	@RabbitListener(queues = { "#{notificationFriendAddQueue.name}", "#{notificationFriendRemoveQueue.name}",
-			"#{notificationFriendReceivedInviteQueue.name}", "#{notificationFriendDeclineInviteQueue.name}" })
+			"#{notificationFriendSentInviteQueue.name}", "#{notificationFriendDeclineInviteQueue.name}" })
 	public void receiveFriendNotification(NotificationMessage message) {
 		notificationService.addNotifications(NotificationType.FRIENDCHANGE, message.getUsername(), message.getData());
 	}
@@ -59,5 +59,11 @@ public class NotificationConsumer {
 	@RabbitListener(queues = { "#{notificationInstancePersonLogoutQueue.name}" })
 	public void receivePersonLogoutNotification(NotificationMessage message) {
 		notificationService.removePersonServerLocation(message.getUsername());
+	}
+
+	@RabbitListener(queues = { "#{notificationFriendReceivedInviteQueue.name}" })
+	public void receiveFriendReceivedInviteNotification(NotificationMessage message) {
+		notificationService.addNotifications(NotificationType.FRIEND_RECEIVED_INVITE, message.getUsername(),
+				message.getData());
 	}
 }
