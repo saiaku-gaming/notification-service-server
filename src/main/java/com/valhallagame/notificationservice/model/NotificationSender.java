@@ -1,9 +1,11 @@
 package com.valhallagame.notificationservice.model;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +17,11 @@ import lombok.Data;
 
 @Data
 public class NotificationSender {
-	
+
 	private static final String SOCKET_FAILURE = "Socket failure";
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationSender.class);
-	
+
 	private static final long FLATLINE_TIME_MS = 2000L;
 
 	private String address;
@@ -73,7 +75,7 @@ public class NotificationSender {
 	public void open() throws IOException {
 		logger.info("Trying To Open: %s:%s", address, port);
 		socket = new Socket(address, port);
-		writer = new PrintWriter(socket.getOutputStream(), true);
+		writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 		heartbeatThread = new Thread(() -> {
 			try {
 				while (!heartbeatThread.isInterrupted()) {
@@ -127,5 +129,5 @@ public class NotificationSender {
 	public int hashCode() {
 		return 37 * (address == null ? 0 : address.hashCode()) * port;
 	}
-	
+
 }

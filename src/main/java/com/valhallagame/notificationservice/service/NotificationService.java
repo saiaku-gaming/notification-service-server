@@ -128,12 +128,15 @@ public class NotificationService {
 	public synchronized void syncSendersAndLocations() throws IOException {
 		Set<String> missingInstances = new HashSet<>();
 		missingInstances.addAll(notificationSenders.keySet());
-		
+
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
 		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
+		System.out.println("Checking all instances from instance service");
 		if (allInstancesOpt.isPresent()) {
 			for (InstanceData instance : allInstancesOpt.get()) {
+				System.out.println("Checking instance: " + instance.getId());
 				if (!missingInstances.remove(instance.getId())) {
+					System.out.println("Instance not registered, registering now");
 					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
 				}
 			}
@@ -142,7 +145,9 @@ public class NotificationService {
 					allInstancesResp.getErrorMessage());
 		}
 
+		System.out.println("Checking instances to be removed");
 		for (String missingInstance : missingInstances) {
+			System.out.println("Unregistering instance: " + missingInstance);
 			unregisterNotificationListener(missingInstance);
 		}
 	}
