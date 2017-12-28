@@ -54,7 +54,7 @@ public class NotificationSender {
 			} else if (System.currentTimeMillis() > (lastHeartbeat + FLATLINE_TIME_MS)) {
 				logger.info("flatline detected");
 				close();
-				logger.info("reconnecting to: %s:%s", address, port);
+				logger.info("reconnecting to: {}:{}", address, port);
 				open();
 				logger.info("reconnection successful");
 			}
@@ -62,7 +62,7 @@ public class NotificationSender {
 			logger.info("send notification sending");
 			writer.println(new ObjectMapper().writeValueAsString(message));
 		} catch (ConnectException e) {
-			logger.info("unable to reconnect to: %s:%s, unregistering listener", address, port);
+			logger.info("unable to reconnect to: {}:{}, unregistering listener", address, port);
 			return false;
 		} catch (IOException e) {
 			logger.error(SOCKET_FAILURE, e);
@@ -73,7 +73,7 @@ public class NotificationSender {
 	}
 
 	public void open() throws IOException {
-		logger.info("Trying To Open: %s:%s", address, port);
+		logger.info("Trying To Open: {}:{}", address, port);
 		socket = new Socket(address, port);
 		writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 		heartbeatThread = new Thread(() -> {
