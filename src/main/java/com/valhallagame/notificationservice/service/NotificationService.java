@@ -1,12 +1,14 @@
 package com.valhallagame.notificationservice.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +35,7 @@ public class NotificationService {
 
 	private static ConcurrentMap<String, NotificationSender> notificationSenders = new ConcurrentHashMap<>();
 	private static ConcurrentMap<String, String> personServerLocations = new ConcurrentHashMap<>();
+	private static ConcurrentLinkedQueue<NotificationData> unsentNotifications = new ConcurrentLinkedQueue<>();
 
 	@Autowired
 	private RegisteredServerService registeredServerService;
@@ -100,16 +103,19 @@ public class NotificationService {
 		}
 	}
 
-	public synchronized void addNotifications(NotificationType type, String username, Map<String, Object> data) {
+	public synchronized void addNotification(NotificationType type, String username, Map<String, Object> data) {
+		addNotification(new NotificationData(username, type.name(), data));
+	}
+
+	public synchronized void addNotification(NotificationData message) {
 		logger.info("Add Notification");
 
-		NotificationData message = new NotificationData(username, type.name(), data);
-
-		String playerServerLocation = personServerLocations.get(username);
+		String playerServerLocation = personServerLocations.get(message.getUsername());
 
 		if (playerServerLocation == null) {
-			logger.info("Could not find {} in a server", username);
-			// TODO do some shit...
+			logger.info("Could not find {} in a server", message.getUsername());
+			message.setRetries(message.getRetries() + 1);
+			unsentNotifications.add(message);
 			return;
 		}
 
@@ -131,12 +137,12 @@ public class NotificationService {
 
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
 		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
-		System.out.println("Checking all instances from instance service");
+		logger.info("Checking all instances from instance service");
 		if (allInstancesOpt.isPresent()) {
 			for (InstanceData instance : allInstancesOpt.get()) {
-				System.out.println("Checking instance: " + instance.getId());
+				logger.info("Checking instance: " + instance.getId());
 				if (!missingInstances.remove(instance.getId())) {
-					System.out.println("Instance not registered, registering now");
+					logger.info("Instance not registered, registering now");
 					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
 				}
 			}
@@ -145,10 +151,22 @@ public class NotificationService {
 					allInstancesResp.getErrorMessage());
 		}
 
-		System.out.println("Checking instances to be removed");
+		logger.info("Checking instances to be removed");
 		for (String missingInstance : missingInstances) {
-			System.out.println("Unregistering instance: " + missingInstance);
+			logger.info("Unregistering instance: " + missingInstance);
 			unregisterNotificationListener(missingInstance);
+		}
+	}
+
+	public synchronized void resendUnsentMessages() {
+		List<NotificationData> unsentMessages = new ArrayList<>();
+		unsentMessages.addAll(unsentNotifications);
+		unsentNotifications.clear();
+
+		for (NotificationData notificationData : unsentMessages) {
+			if (notificationData.getRetries() <= 10) {
+				addNotification(notificationData);
+			}
 		}
 	}
 }
