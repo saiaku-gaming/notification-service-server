@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import com.valhallagame.common.RestResponse;
 import com.valhallagame.instanceserviceclient.InstanceServiceClient;
 import com.valhallagame.instanceserviceclient.model.InstanceData;
-import com.valhallagame.notificationservice.message.NotificationMessage;
+import com.valhallagame.notificationservice.message.NotificationData;
 import com.valhallagame.notificationservice.model.NotificationSender;
 import com.valhallagame.notificationservice.model.NotificationType;
 import com.valhallagame.notificationservice.model.RegisteredServer;
@@ -103,6 +103,8 @@ public class NotificationService {
 	public synchronized void addNotifications(NotificationType type, String username, Map<String, Object> data) {
 		logger.info("Add Notification");
 
+		NotificationData message = new NotificationData(username, type.name(), data);
+
 		String playerServerLocation = personServerLocations.get(username);
 
 		if (playerServerLocation == null) {
@@ -118,8 +120,6 @@ public class NotificationService {
 			return;
 		}
 
-		NotificationMessage message = new NotificationMessage();
-		message.addNotification(username, type.name(), data);
 		if (!notificationSender.sendNotification(message)) {
 			notificationSenders.remove(playerServerLocation);
 		}

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.valhallagame.notificationservice.message.NotificationMessage;
+import com.valhallagame.notificationservice.message.NotificationData;
 
 import lombok.Data;
 
@@ -44,7 +44,7 @@ public class NotificationSender {
 		}
 	}
 
-	public boolean sendNotification(NotificationMessage message) {
+	public boolean sendNotification(NotificationData message) {
 		logger.info("send notification inner");
 		try {
 			logger.info("send notification try");
