@@ -259,7 +259,7 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Chat.RECEIVED_MESSAGE);
 	}
 
-	// START_DUNGEON, PERSON_LOGIN, PERSON_LOGOUT
+	// DUNGEON_ACTIVE, PERSON_LOGIN, PERSON_LOGOUT, DUNGEON_QUEUED, DUNGEON_FINISHED
 
 	@Bean
 	public DirectExchange instanceExchange() {
@@ -282,6 +282,16 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue notificationInstanceDungeonQueuedQueue() {
+		return new Queue("notificationInstanceDungeonQueuedQueue");
+	}
+
+	@Bean
+	public Queue notificationInstanceDungeonFinishedQueue() {
+		return new Queue("notificationInstanceDungeonFinishedQueue");
+	}
+
+	@Bean
 	public Binding bindingInstanceDungeonActive(DirectExchange instanceExchange,
 			Queue notificationInstanceDungeonActiveQueue) {
 		return BindingBuilder.bind(notificationInstanceDungeonActiveQueue).to(instanceExchange)
@@ -300,6 +310,20 @@ public class RabbitMQConfig {
 			Queue notificationInstancePersonLogoutQueue) {
 		return BindingBuilder.bind(notificationInstancePersonLogoutQueue).to(instanceExchange)
 				.with(RabbitMQRouting.Instance.PERSON_LOGOUT);
+	}
+
+	@Bean
+	public Binding bindingInstanceDungeonQueued(DirectExchange instanceExchange,
+			Queue notificationInstanceDungeonQueuedQueue) {
+		return BindingBuilder.bind(notificationInstanceDungeonQueuedQueue).to(instanceExchange)
+				.with(RabbitMQRouting.Instance.DUNGEON_QUEUED);
+	}
+
+	@Bean
+	public Binding bindingInstanceDungeonFinished(DirectExchange instanceExchange,
+			Queue notificationInstanceDungeonFinishedQueue) {
+		return BindingBuilder.bind(notificationInstanceDungeonFinishedQueue).to(instanceExchange)
+				.with(RabbitMQRouting.Instance.DUNGEON_FINISHED);
 	}
 
 	@Bean
