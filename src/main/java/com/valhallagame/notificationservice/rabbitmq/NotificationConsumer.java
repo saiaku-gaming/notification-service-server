@@ -63,6 +63,12 @@ public class NotificationConsumer {
 				message.getData());
 	}
 
+	@RabbitListener(queues = { "#{notificationInstanceQueuePlacementFulfilledQueue.name}" })
+	public void receiveQueuePlacementFulfilledNotification(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.QUEUE_PLACEMENT_FULFILLED, message.getUsername(),
+				message.getData());
+	}
+
 	@RabbitListener(queues = { "#{notificationInstancePersonLoginQueue.name}" })
 	public void receivePersonLoginNotification(NotificationMessage message) {
 		notificationService.addPersonServerLocation(message.getUsername(), message.getData());
