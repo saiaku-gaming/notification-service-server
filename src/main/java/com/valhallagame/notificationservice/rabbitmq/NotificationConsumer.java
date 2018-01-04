@@ -56,6 +56,12 @@ public class NotificationConsumer {
 	public void receiveDungeonQueuedNotification(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.DUNGEON_QUEUED, message.getUsername(), message.getData());
 	}
+	
+	@RabbitListener(queues = { "#{notificationInstanceDungeonFinishingQueue.name}" })
+	public void receiveDungeonFinishingNotification(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.DUNGEON_FINISHING, message.getUsername(),
+				message.getData());
+	}
 
 	@RabbitListener(queues = { "#{notificationInstanceDungeonFinishedQueue.name}" })
 	public void receiveDungeonFinishedNotification(NotificationMessage message) {

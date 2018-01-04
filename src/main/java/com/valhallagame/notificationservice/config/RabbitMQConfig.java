@@ -288,6 +288,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue notificationInstanceDungeonFinishingQueue() {
+		return new Queue("notificationInstanceDungeonFinishingQueue");
+	}
+	
+	@Bean
 	public Queue notificationInstanceDungeonFinishedQueue() {
 		return new Queue("notificationInstanceDungeonFinishedQueue");
 	}
@@ -325,6 +330,14 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Instance.DUNGEON_QUEUED);
 	}
 
+	@Bean
+	public Binding bindingInstanceDungeonFinishing(DirectExchange instanceExchange,
+			Queue notificationInstanceDungeonFinishingQueue) {
+		return BindingBuilder.bind(notificationInstanceDungeonFinishingQueue).to(instanceExchange)
+				.with(RabbitMQRouting.Instance.DUNGEON_FINISHING);
+	}
+
+	
 	@Bean
 	public Binding bindingInstanceDungeonFinished(DirectExchange instanceExchange,
 			Queue notificationInstanceDungeonFinishedQueue) {
