@@ -31,7 +31,8 @@ public class NotificationService {
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
-	private static InstanceServiceClient instanceServiceClient = InstanceServiceClient.get();
+	@Autowired
+	private InstanceServiceClient instanceServiceClient;
 
 	private static ConcurrentMap<String, NotificationSender> notificationSenders = new ConcurrentHashMap<>();
 	private static ConcurrentMap<String, String> personServerLocations = new ConcurrentHashMap<>();
