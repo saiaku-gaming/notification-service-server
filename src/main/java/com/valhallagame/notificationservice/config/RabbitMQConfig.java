@@ -50,6 +50,16 @@ public class RabbitMQConfig {
 	public Queue notificationFriendSentInviteQueue() {
 		return new Queue("notificationFriendSentInviteQueue");
 	}
+	
+	@Bean
+	public Queue notificationFriendOnlineQueue() {
+		return new Queue("notificationFriendOnlineQueue");
+	}
+	
+	@Bean
+	public Queue notificationFriendOfflineQueue() {
+		return new Queue("notificationFriendOfflineQueue");
+	}
 
 	@Bean
 	public Binding bindingFriendAdd(DirectExchange friendExchange, Queue notificationFriendAddQueue) {
@@ -81,7 +91,19 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationFriendSentInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.SENT_INVITE);
 	}
+	
+	@Bean
+	public Binding bindingFriendOnline(DirectExchange friendExchange, Queue notificationFriendOnlineQueue) {
+		return BindingBuilder.bind(notificationFriendOnlineQueue).to(friendExchange)
+				.with(RabbitMQRouting.Friend.ONLINE);
+	}
 
+	@Bean
+	public Binding bindingFriendOffline(DirectExchange friendExchange, Queue notificationFriendOfflineQueue) {
+		return BindingBuilder.bind(notificationFriendOfflineQueue).to(friendExchange)
+				.with(RabbitMQRouting.Friend.OFFLINE);
+	}
+	
 	// CANCEL_INVITE, ACCEPT_INVITE, DECLINE_INVITE, LEAVE, KICK_FROM_PARTY,
 	// PROMOTE_LEADER, RECEIVED_INVITE
 
@@ -135,6 +157,16 @@ public class RabbitMQConfig {
 		return new Queue("notificationPartySelectCharacterQueue");
 	}
 
+	@Bean
+	public Queue notificationPartyPersonOnlineQueue() {
+		return new Queue("notificationPartyPersonOnlineQueue");
+	}
+
+	@Bean
+	public Queue notificationPartyPersonOfflineQueue() {
+		return new Queue("notificationPartyPersonOfflineQueue");
+	}
+	
 	@Bean
 	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue notificationPartyCancelInviteQueue) {
 		return BindingBuilder.bind(notificationPartyCancelInviteQueue).to(partyExchange)
@@ -190,6 +222,21 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Party.SELECT_CHARACTER);
 	}
 
+	@Bean
+	public Binding bindingPartyPersonOnline(DirectExchange partyExchange,
+			Queue notificationPartyPersonOnlineQueue) {
+		return BindingBuilder.bind(notificationPartyPersonOnlineQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.PERSON_ONLINE);
+	}
+	
+	@Bean
+	public Binding bindingPartyPersonOffline(DirectExchange partyExchange,
+			Queue notificationPartyPersonOfflineQueue) {
+		return BindingBuilder.bind(notificationPartyPersonOfflineQueue).to(partyExchange)
+				.with(RabbitMQRouting.Party.PERSON_OFFLINE);
+	}
+
+	
 	// DELETE, CREATE, ONLINE, OFFLINE
 
 	@Bean
