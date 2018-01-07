@@ -109,7 +109,7 @@ public class NotificationService {
 	}
 
 	public synchronized void addNotification(NotificationData message) {
-		logger.info("Add Notification");
+		logger.info("Add Notification: " + message);
 
 		String playerServerLocation = personServerLocations.get(message.getUsername());
 
