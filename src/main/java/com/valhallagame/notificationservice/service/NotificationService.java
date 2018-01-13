@@ -109,7 +109,7 @@ public class NotificationService {
 	}
 
 	public synchronized void addNotification(NotificationData message) {
-		logger.info("Add Notification: " + message);
+		logger.info("Add Notification: {}", message);
 
 		String playerServerLocation = personServerLocations.get(message.getUsername());
 
@@ -154,7 +154,7 @@ public class NotificationService {
 
 		logger.info("Checking instances to be removed");
 		for (String missingInstance : missingInstances) {
-			logger.info("Unregistering instance: " + missingInstance);
+			logger.info("Unregistering instance: {}", missingInstance);
 			unregisterNotificationListener(missingInstance);
 		}
 	}
