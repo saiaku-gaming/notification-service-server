@@ -21,6 +21,22 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public DirectExchange featExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.FEAT.name());
+	}
+	
+	@Bean
+	public Queue notificationFeatAddQueue() {
+		return new Queue("notificationFeatAddQueue");
+	}
+
+	@Bean
+	public Binding bindingFeatAdd(DirectExchange featExchange, Queue notificationFeatAddQueue) {
+		return BindingBuilder.bind(notificationFeatAddQueue).to(featExchange).with(RabbitMQRouting.Feat.ADD);
+	}
+
+	
+	@Bean
 	public DirectExchange friendExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.FRIEND.name());
 	}

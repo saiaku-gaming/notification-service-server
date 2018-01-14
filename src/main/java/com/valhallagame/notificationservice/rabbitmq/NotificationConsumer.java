@@ -23,7 +23,15 @@ public class NotificationConsumer {
 	public void receiveFriendNotification(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.FRIENDCHANGE, message.getUsername(), message.getData());
 	}
-
+	
+	
+	@RabbitListener(queues = { "#{notificationFeatAddQueue.name}" })
+	public void receiveFeatAdd(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.FEAT_ADDED, message.getUsername(),
+				message.getData());
+	}
+	
+	
 	@RabbitListener(queues = { "#{notificationFriendOnlineQueue.name}" })
 	public void receiveFriendOnline(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.FRIEND_ONLINE, message.getUsername(),
