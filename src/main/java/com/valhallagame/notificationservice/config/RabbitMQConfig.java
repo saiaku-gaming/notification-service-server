@@ -29,10 +29,20 @@ public class RabbitMQConfig {
 	public Queue notificationFeatAddQueue() {
 		return new Queue("notificationFeatAddQueue");
 	}
+	
+	@Bean
+	public Queue notificationFeatRemoveQueue() {
+		return new Queue("notificationFeatRemoveQueue");
+	}
 
 	@Bean
 	public Binding bindingFeatAdd(DirectExchange featExchange, Queue notificationFeatAddQueue) {
 		return BindingBuilder.bind(notificationFeatAddQueue).to(featExchange).with(RabbitMQRouting.Feat.ADD);
+	}
+	
+	@Bean
+	public Binding bindingFeatRemove(DirectExchange featExchange, Queue notificationFeatRemoveQueue) {
+		return BindingBuilder.bind(notificationFeatRemoveQueue).to(featExchange).with(RabbitMQRouting.Feat.REMOVE);
 	}
 
 	

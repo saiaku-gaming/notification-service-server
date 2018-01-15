@@ -32,6 +32,14 @@ public class NotificationConsumer {
 	}
 	
 	
+	@RabbitListener(queues = { "#{notificationFeatRemoveQueue.name}" })
+	public void receiveFeatRemove(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.FEAT_REMOVED, message.getUsername(),
+				message.getData());
+	}
+	
+	
+	
 	@RabbitListener(queues = { "#{notificationFriendOnlineQueue.name}" })
 	public void receiveFriendOnline(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.FRIEND_ONLINE, message.getUsername(),

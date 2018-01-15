@@ -18,7 +18,8 @@ public enum NotificationType {
 	PARTY_PERSON_OFFLINE,
 	FRIEND_ONLINE,
 	FRIEND_OFFLINE,
-	FEAT_ADDED;
+	FEAT_ADDED,
+	FEAT_REMOVED;
 
 	public String getValue() {
 		return this.name();
