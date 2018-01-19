@@ -24,12 +24,12 @@ public class RabbitMQConfig {
 	public DirectExchange featExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.FEAT.name());
 	}
-	
+
 	@Bean
 	public Queue notificationFeatAddQueue() {
 		return new Queue("notificationFeatAddQueue");
 	}
-	
+
 	@Bean
 	public Queue notificationFeatRemoveQueue() {
 		return new Queue("notificationFeatRemoveQueue");
@@ -39,13 +39,12 @@ public class RabbitMQConfig {
 	public Binding bindingFeatAdd(DirectExchange featExchange, Queue notificationFeatAddQueue) {
 		return BindingBuilder.bind(notificationFeatAddQueue).to(featExchange).with(RabbitMQRouting.Feat.ADD);
 	}
-	
+
 	@Bean
 	public Binding bindingFeatRemove(DirectExchange featExchange, Queue notificationFeatRemoveQueue) {
 		return BindingBuilder.bind(notificationFeatRemoveQueue).to(featExchange).with(RabbitMQRouting.Feat.REMOVE);
 	}
 
-	
 	@Bean
 	public DirectExchange friendExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.FRIEND.name());
@@ -76,12 +75,12 @@ public class RabbitMQConfig {
 	public Queue notificationFriendSentInviteQueue() {
 		return new Queue("notificationFriendSentInviteQueue");
 	}
-	
+
 	@Bean
 	public Queue notificationFriendOnlineQueue() {
 		return new Queue("notificationFriendOnlineQueue");
 	}
-	
+
 	@Bean
 	public Queue notificationFriendOfflineQueue() {
 		return new Queue("notificationFriendOfflineQueue");
@@ -117,7 +116,7 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationFriendSentInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.SENT_INVITE);
 	}
-	
+
 	@Bean
 	public Binding bindingFriendOnline(DirectExchange friendExchange, Queue notificationFriendOnlineQueue) {
 		return BindingBuilder.bind(notificationFriendOnlineQueue).to(friendExchange)
@@ -129,7 +128,7 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationFriendOfflineQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.OFFLINE);
 	}
-	
+
 	// CANCEL_INVITE, ACCEPT_INVITE, DECLINE_INVITE, LEAVE, KICK_FROM_PARTY,
 	// PROMOTE_LEADER, RECEIVED_INVITE
 
@@ -192,7 +191,7 @@ public class RabbitMQConfig {
 	public Queue notificationPartyPersonOfflineQueue() {
 		return new Queue("notificationPartyPersonOfflineQueue");
 	}
-	
+
 	@Bean
 	public Binding bindingPartyCancelInvite(DirectExchange partyExchange, Queue notificationPartyCancelInviteQueue) {
 		return BindingBuilder.bind(notificationPartyCancelInviteQueue).to(partyExchange)
@@ -249,20 +248,17 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	public Binding bindingPartyPersonOnline(DirectExchange partyExchange,
-			Queue notificationPartyPersonOnlineQueue) {
+	public Binding bindingPartyPersonOnline(DirectExchange partyExchange, Queue notificationPartyPersonOnlineQueue) {
 		return BindingBuilder.bind(notificationPartyPersonOnlineQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.PERSON_ONLINE);
 	}
-	
+
 	@Bean
-	public Binding bindingPartyPersonOffline(DirectExchange partyExchange,
-			Queue notificationPartyPersonOfflineQueue) {
+	public Binding bindingPartyPersonOffline(DirectExchange partyExchange, Queue notificationPartyPersonOfflineQueue) {
 		return BindingBuilder.bind(notificationPartyPersonOfflineQueue).to(partyExchange)
 				.with(RabbitMQRouting.Party.PERSON_OFFLINE);
 	}
 
-	
 	// DELETE, CREATE, ONLINE, OFFLINE
 
 	@Bean
@@ -364,7 +360,7 @@ public class RabbitMQConfig {
 	public Queue notificationInstanceDungeonFinishingQueue() {
 		return new Queue("notificationInstanceDungeonFinishingQueue");
 	}
-	
+
 	@Bean
 	public Queue notificationInstanceDungeonFinishedQueue() {
 		return new Queue("notificationInstanceDungeonFinishedQueue");
@@ -410,7 +406,6 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Instance.DUNGEON_FINISHING);
 	}
 
-	
 	@Bean
 	public Binding bindingInstanceDungeonFinished(DirectExchange instanceExchange,
 			Queue notificationInstanceDungeonFinishedQueue) {
@@ -423,6 +418,25 @@ public class RabbitMQConfig {
 			Queue notificationInstanceQueuePlacementFulfilledQueue) {
 		return BindingBuilder.bind(notificationInstanceQueuePlacementFulfilledQueue).to(instanceExchange)
 				.with(RabbitMQRouting.Instance.QUEUE_PLACEMENT_FULFILLED);
+	}
+
+	// ADD_WARDROBE_ITEM
+
+	@Bean
+	public DirectExchange wardrobeExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.WARDROBE.name());
+	}
+
+	@Bean
+	public Queue notificationAddWardrobeItemQueue() {
+		return new Queue("notificationAddWardrobeItemQueue");
+	}
+
+	@Bean
+	public Binding bindingWardrobeQueueAddWardrobeItem(DirectExchange wardrobeExchange,
+			Queue notificationAddWardrobeItemQueue) {
+		return BindingBuilder.bind(notificationAddWardrobeItemQueue).to(wardrobeExchange)
+				.with(RabbitMQRouting.Wardrobe.ADD_WARDROBE_ITEM);
 	}
 
 	@Bean
