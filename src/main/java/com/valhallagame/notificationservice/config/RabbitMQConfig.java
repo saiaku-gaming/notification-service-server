@@ -15,11 +15,9 @@ import com.valhallagame.notificationservice.rabbitmq.NotificationConsumer;
 @Configuration
 public class RabbitMQConfig {
 
-	@Bean
-	public NotificationConsumer consumer() {
-		return new NotificationConsumer();
-	}
 
+	/*************** FEAT ***************/ 
+	
 	@Bean
 	public DirectExchange featExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.FEAT.name());
@@ -45,12 +43,40 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationFeatRemoveQueue).to(featExchange).with(RabbitMQRouting.Feat.REMOVE);
 	}
 
+	/*************** TRAIT ***************/
+	
+	@Bean
+	public DirectExchange traitExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.TRAIT.name());
+	}
+
+	@Bean
+	public Queue notificationTraitUnlockQueue() {
+		return new Queue("notificationTraitUnlockQueue");
+	}
+
+	@Bean
+	public Queue notificationTraitLockQueue() {
+		return new Queue("notificationTraitLockQueue");
+	}
+
+	@Bean
+	public Binding bindingTraitUnlock(DirectExchange traitExchange, Queue notificationTraitUnlockQueue) {
+		return BindingBuilder.bind(notificationTraitUnlockQueue).to(traitExchange).with(RabbitMQRouting.Trait.UNLOCK);
+	}
+
+	@Bean
+	public Binding bindingTraitRemove(DirectExchange traitExchange, Queue notificationTraitLockQueue) {
+		return BindingBuilder.bind(notificationTraitLockQueue).to(traitExchange).with(RabbitMQRouting.Trait.LOCK);
+	}
+	
+	/*************** FRIEND ***************/
+	
 	@Bean
 	public DirectExchange friendExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.FRIEND.name());
 	}
 
-	// ADD, REMOVE, RECEIVED_INVITE, DECLINE_INVITE, SENT_INVITE
 	@Bean
 	public Queue notificationFriendAddQueue() {
 		return new Queue("notificationFriendAddQueue");
@@ -129,9 +155,8 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Friend.OFFLINE);
 	}
 
-	// CANCEL_INVITE, ACCEPT_INVITE, DECLINE_INVITE, LEAVE, KICK_FROM_PARTY,
-	// PROMOTE_LEADER, RECEIVED_INVITE
-
+	/*************** PARTY ***************/
+	
 	@Bean
 	public DirectExchange partyExchange() {
 		return new DirectExchange(RabbitMQRouting.Exchange.PARTY.name());
@@ -259,7 +284,7 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Party.PERSON_OFFLINE);
 	}
 
-	// DELETE, CREATE, ONLINE, OFFLINE
+	/*************** PERSON ***************/
 
 	@Bean
 	public DirectExchange personExchange() {
@@ -310,7 +335,7 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Person.OFFLINE);
 	}
 
-	// RECEIVED_MESSAGE
+	/*************** CHAT ***************/
 
 	@Bean
 	public DirectExchange chatExchange() {
@@ -328,8 +353,7 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Chat.RECEIVED_MESSAGE);
 	}
 
-	// DUNGEON_ACTIVE, PERSON_LOGIN, PERSON_LOGOUT, DUNGEON_QUEUED,
-	// DUNGEON_FINISHED, QUEUE_PLACEMENT_FULFILLED
+	/*************** INSTANCE ***************/
 
 	@Bean
 	public DirectExchange instanceExchange() {
@@ -420,7 +444,7 @@ public class RabbitMQConfig {
 				.with(RabbitMQRouting.Instance.QUEUE_PLACEMENT_FULFILLED);
 	}
 
-	// ADD_WARDROBE_ITEM
+	/*************** WARDROBE ***************/
 
 	@Bean
 	public DirectExchange wardrobeExchange() {
@@ -438,7 +462,14 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationAddWardrobeItemQueue).to(wardrobeExchange)
 				.with(RabbitMQRouting.Wardrobe.ADD_WARDROBE_ITEM);
 	}
+	
+	/*************** GENERAL CONFIG ***************/
 
+	@Bean
+	public NotificationConsumer consumer() {
+		return new NotificationConsumer();
+	}
+	
 	@Bean
 	public Jackson2JsonMessageConverter jacksonConverter() {
 		return new Jackson2JsonMessageConverter();

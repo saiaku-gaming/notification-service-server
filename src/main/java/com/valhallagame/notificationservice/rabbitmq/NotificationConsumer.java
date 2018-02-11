@@ -26,6 +26,18 @@ public class NotificationConsumer {
 				message.getData());
 	}
 
+	@RabbitListener(queues = { "#{notificationTraitLockQueue.name}" })
+	public void receiveLockTrait(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.TRAIT_LOCKED, message.getUsername(),
+				message.getData());
+	}
+	
+	@RabbitListener(queues = { "#{notificationTraitUnlockQueue.name}" })
+	public void receiveUnlockTrait(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.TRAIT_UNLOCKED, message.getUsername(),
+				message.getData());
+	}
+
 	@RabbitListener(queues = { "#{notificationFeatAddQueue.name}" })
 	public void receiveFeatAdd(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.FEAT_ADDED, message.getUsername(), message.getData());
