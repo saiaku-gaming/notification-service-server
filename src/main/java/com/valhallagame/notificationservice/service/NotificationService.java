@@ -139,8 +139,6 @@ public class NotificationService {
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
 		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
 		logger.info("Checking all instances from instance service");
-		logger.info("Checking instances: " + missingInstances.toString());
-		logger.info("Registered instances: " + notificationSenders.toString());
 		if (allInstancesOpt.isPresent()) {
 			for (InstanceData instance : allInstancesOpt.get()) {
 				logger.info("Checking instance: " + instance.getId());
