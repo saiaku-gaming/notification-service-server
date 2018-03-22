@@ -139,10 +139,12 @@ public class NotificationService {
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
 		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
 		logger.info("Checking all instances from instance service");
+		logger.info("Registered instances: " + missingInstances.toString());
 		if (allInstancesOpt.isPresent()) {
 			for (InstanceData instance : allInstancesOpt.get()) {
 				logger.info("Checking instance: " + instance.getId());
 				if (!missingInstances.remove(instance.getId())) {
+					logger.info("Unable to find instance: " + instance.getId() + " in: " + missingInstances.toString());
 					logger.info("Instance not registered, registering now");
 					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
 				}
