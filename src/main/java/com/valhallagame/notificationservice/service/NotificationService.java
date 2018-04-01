@@ -62,13 +62,14 @@ public class NotificationService {
 		} catch (IOException e) {
 			logger.error("Something gon' wrong", e);
 		}
-
-		List<RegisteredServer> allRegisteredServers = registeredServerService.getAllRegisteredServers();
-		for (RegisteredServer registeredServer : allRegisteredServers) {
-			NotificationSender notificationSender = new NotificationSender(registeredServer.getIpAddress(),
-					registeredServer.getPort());
-			notificationSenders.put(registeredServer.getId(), notificationSender);
-		}
+		new Thread(() -> {
+			List<RegisteredServer> allRegisteredServers = registeredServerService.getAllRegisteredServers();
+			for (RegisteredServer registeredServer : allRegisteredServers) {
+				NotificationSender notificationSender = new NotificationSender(registeredServer.getIpAddress(),
+						registeredServer.getPort());
+				notificationSenders.put(registeredServer.getId(), notificationSender);
+			}
+		}).start();
 	}
 
 	public void addPersonServerLocation(String username, Map<String, Object> data) {
