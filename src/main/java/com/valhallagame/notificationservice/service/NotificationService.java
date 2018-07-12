@@ -111,25 +111,28 @@ public class NotificationService {
 
 	public synchronized void addNotification(NotificationData message) {
 		logger.info("Add Notification: {}", message);
+		try {
+			String playerServerLocation = personServerLocations.get(message.getUsername());
 
-		String playerServerLocation = personServerLocations.get(message.getUsername());
+			if (playerServerLocation == null) {
+				logger.info("Could not find {} in a server", message.getUsername());
+				message.setRetries(message.getRetries() + 1);
+				unsentNotifications.add(message);
+				return;
+			}
 
-		if (playerServerLocation == null) {
-			logger.info("Could not find {} in a server", message.getUsername());
-			message.setRetries(message.getRetries() + 1);
-			unsentNotifications.add(message);
-			return;
-		}
+			NotificationSender notificationSender = notificationSenders.get(playerServerLocation);
 
-		NotificationSender notificationSender = notificationSenders.get(playerServerLocation);
+			if (notificationSender == null) {
+				logger.error("The server {} does not have a registered listener", playerServerLocation);
+				return;
+			}
 
-		if (notificationSender == null) {
-			logger.error("The server {} does not have a registered listener", playerServerLocation);
-			return;
-		}
-
-		if (!notificationSender.sendNotification(message)) {
-			notificationSenders.remove(playerServerLocation);
+			if (!notificationSender.sendNotification(message)) {
+				notificationSenders.remove(playerServerLocation);
+			}
+		} catch (Exception e){
+			logger.error("Caught exception when adding a new notification", e);
 		}
 	}
 
