@@ -1,23 +1,5 @@
 package com.valhallagame.notificationservice.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.valhallagame.common.RestResponse;
 import com.valhallagame.instanceserviceclient.InstanceServiceClient;
 import com.valhallagame.instanceserviceclient.model.InstanceData;
@@ -25,6 +7,17 @@ import com.valhallagame.notificationservice.message.NotificationData;
 import com.valhallagame.notificationservice.model.NotificationSender;
 import com.valhallagame.notificationservice.model.NotificationType;
 import com.valhallagame.notificationservice.model.RegisteredServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class NotificationService {
@@ -109,7 +102,7 @@ public class NotificationService {
 		addNotification(new NotificationData(username, type.name(), data));
 	}
 
-	public synchronized void addNotification(NotificationData message) {
+	private synchronized void addNotification(NotificationData message) {
 		logger.info("Add Notification: {}", message);
 		if(message.getUsername() == null){
 			logger.error("Tried to add a netification without username! " + message);
@@ -132,13 +125,12 @@ public class NotificationService {
 		}
 
 		if (!notificationSender.sendNotification(message)) {
-			notificationSenders.remove(playerServerLocation);
+			unregisterNotificationListener(playerServerLocation);
 		}
 	}
 
 	public synchronized void syncSendersAndLocations() throws IOException {
-		Set<String> missingInstances = new HashSet<>();
-		missingInstances.addAll(notificationSenders.keySet());
+		Set<String> missingInstances = new HashSet<>(notificationSenders.keySet());
 
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
 		Optional<List<InstanceData>> allInstancesOpt = allInstancesResp.get();
@@ -165,8 +157,7 @@ public class NotificationService {
 	}
 
 	public synchronized void resendUnsentMessages() {
-		List<NotificationData> unsentMessages = new ArrayList<>();
-		unsentMessages.addAll(unsentNotifications);
+		List<NotificationData> unsentMessages = new ArrayList<>(unsentNotifications);
 		unsentNotifications.clear();
 
 		for (NotificationData notificationData : unsentMessages) {

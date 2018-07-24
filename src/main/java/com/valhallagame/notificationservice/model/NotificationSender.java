@@ -1,19 +1,17 @@
 package com.valhallagame.notificationservice.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.valhallagame.notificationservice.message.NotificationData;
+import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.valhallagame.notificationservice.message.NotificationData;
-
-import lombok.Data;
 
 @Data
 public class NotificationSender {
@@ -72,7 +70,7 @@ public class NotificationSender {
 		return true;
 	}
 
-	public void open() throws IOException {
+	private void open() throws IOException {
 		logger.info("Trying To Open: {}:{}", address, port);
 		socket = new Socket(address, port);
 		writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
