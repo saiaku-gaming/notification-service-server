@@ -63,7 +63,7 @@ public class NotificationConsumer {
 			"#{notificationPartySentInviteQueue.name}", "#{notificationPartyLeaveQueue.name}",
 			"#{notificationPartyKickFromPartyQueue.name}", "#{notificationPartyPromoteLeaderQueue.name}",
 			"#{notificationPartySelectCharacterQueue.name}" })
-	public void receivePartyNotificaiton(NotificationMessage message) {
+	public void receivePartyNotification(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.PARTYCHANGE, message.getUsername(), message.getData());
 	}
 

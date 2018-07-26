@@ -105,7 +105,7 @@ public class NotificationService {
 	private synchronized void addNotification(NotificationData message) {
 		logger.info("Add Notification: {}", message);
 		if(message.getUsername() == null){
-			logger.error("Tried to add a netification without username! " + message);
+			logger.error("Tried to add a notification without username! " + message);
 			return;
 		}
 		String playerServerLocation = personServerLocations.get(message.getUsername());
