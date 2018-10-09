@@ -1,12 +1,11 @@
 package com.valhallagame.notificationservice.rabbitmq;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.valhallagame.common.rabbitmq.NotificationMessage;
 import com.valhallagame.notificationservice.model.NotificationType;
 import com.valhallagame.notificationservice.service.NotificationService;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationConsumer {
@@ -138,6 +137,18 @@ public class NotificationConsumer {
 	@RabbitListener(queues = { "#{notificationFriendReceivedInviteQueue.name}" })
 	public void receiveFriendReceivedInviteNotification(NotificationMessage message) {
 		notificationService.addNotification(NotificationType.FRIEND_RECEIVED_INVITE, message.getUsername(),
+				message.getData());
+	}
+
+	@RabbitListener(queues = {"#{notificationAddRecipeQueue.name}"})
+	public void receiveAddRecipe(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.RECIPE_ADDED, message.getUsername(),
+				message.getData());
+	}
+
+	@RabbitListener(queues = {"#{notificationRemoveRecipeQueue.name}"})
+	public void receiveRemoveRecipe(NotificationMessage message) {
+		notificationService.addNotification(NotificationType.RECIPE_REMOVED, message.getUsername(),
 				message.getData());
 	}
 }

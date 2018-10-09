@@ -24,15 +24,22 @@ public class NotificationService {
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
-	@Autowired
-	private InstanceServiceClient instanceServiceClient;
+	private final InstanceServiceClient instanceServiceClient;
 
 	private static ConcurrentMap<String, NotificationSender> notificationSenders = new ConcurrentHashMap<>();
 	private static ConcurrentMap<String, String> personServerLocations = new ConcurrentHashMap<>();
 	private static ConcurrentLinkedQueue<NotificationData> unsentNotifications = new ConcurrentLinkedQueue<>();
 
+	private final RegisteredServerService registeredServerService;
+
 	@Autowired
-	private RegisteredServerService registeredServerService;
+	public NotificationService(
+			InstanceServiceClient instanceServiceClient,
+			RegisteredServerService registeredServerService
+	) {
+		this.instanceServiceClient = instanceServiceClient;
+		this.registeredServerService = registeredServerService;
+	}
 
 	@PostConstruct
 	public void init() {
@@ -66,7 +73,9 @@ public class NotificationService {
 	}
 
 	public void addPersonServerLocation(String username, Map<String, Object> data) {
+
 		String gameSessionId = (String) data.get("gameSessionId");
+		logger.info("user " + username + " logged in with gameSessionId " + gameSessionId);
 
 		if (gameSessionId == null) {
 			logger.error("Got person login notification with null gameSessionId for username: {} with data: {}",

@@ -1,5 +1,7 @@
 package com.valhallagame.notificationservice.config;
 
+import com.valhallagame.common.rabbitmq.RabbitMQRouting;
+import com.valhallagame.notificationservice.rabbitmq.NotificationConsumer;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -8,9 +10,6 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.valhallagame.common.rabbitmq.RabbitMQRouting;
-import com.valhallagame.notificationservice.rabbitmq.NotificationConsumer;
 
 @Configuration
 public class RabbitMQConfig {
@@ -462,7 +461,38 @@ public class RabbitMQConfig {
 		return BindingBuilder.bind(notificationAddWardrobeItemQueue).to(wardrobeExchange)
 				.with(RabbitMQRouting.Wardrobe.ADD_WARDROBE_ITEM);
 	}
-	
+
+    /*************** RECIPE ***************/
+
+    @Bean
+    public DirectExchange recipeExchange() {
+        return new DirectExchange(RabbitMQRouting.Exchange.RECIPE.name());
+    }
+
+    @Bean
+    public Queue notificationAddRecipeQueue() {
+        return new Queue("notificationAddRecipeQueue");
+    }
+
+    @Bean
+    public Queue notificationRemoveRecipeQueue() {
+        return new Queue("notificationRemoveRecipeQueue");
+    }
+
+    @Bean
+    public Binding bindingRecipeQueueAddRecipe(DirectExchange recipeExchange,
+                                               Queue notificationAddRecipeQueue) {
+        return BindingBuilder.bind(notificationAddRecipeQueue).to(recipeExchange)
+                .with(RabbitMQRouting.Recipe.ADD);
+    }
+
+    @Bean
+    public Binding bindingRecipeQueueRemoveRecipe(DirectExchange recipeExchange,
+                                                  Queue notificationRemoveRecipeQueue) {
+        return BindingBuilder.bind(notificationRemoveRecipeQueue).to(recipeExchange)
+                .with(RabbitMQRouting.Recipe.REMOVE);
+    }
+
 	/*************** GENERAL CONFIG ***************/
 
 	@Bean
