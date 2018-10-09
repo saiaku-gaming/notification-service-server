@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>com.valhallagame.valhalla</groupId>
 			<artifactId>notification-service-client</artifactId>
-			<version>1.0</version>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 	<build>
