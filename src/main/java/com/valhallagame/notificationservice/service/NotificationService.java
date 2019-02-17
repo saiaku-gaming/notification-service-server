@@ -73,7 +73,7 @@ public class NotificationService {
 	}
 
 	public void addPersonServerLocation(String username, Map<String, Object> data) {
-
+		logger.info("Adding person to server for user {} with data {}", username, data);
 		String gameSessionId = (String) data.get("gameSessionId");
 		logger.info("user " + username + " logged in with gameSessionId " + gameSessionId);
 
@@ -86,10 +86,12 @@ public class NotificationService {
 	}
 
 	public void removePersonServerLocation(String username) {
+		logger.info("Removing person from server with user {}", username);
 		personServerLocations.remove(username);
 	}
 
 	public void registerNotificationListener(String gameSessionId, String address, Integer port) {
+		logger.info("Registering notification listener for game session id {} address {} port", gameSessionId, address, port);
 		RegisteredServer registeredServer = new RegisteredServer(gameSessionId, address, port);
 		registeredServerService.saveRegisteredServer(registeredServer);
 
@@ -99,6 +101,7 @@ public class NotificationService {
 	}
 
 	public void unregisterNotificationListener(String gameSessionId) {
+		logger.info("Unregistering notification listener for game session id {}", gameSessionId);
 		registeredServerService.deleteRegisteredServer(gameSessionId);
 		NotificationSender notificationSender = notificationSenders.remove(gameSessionId);
 
@@ -108,6 +111,7 @@ public class NotificationService {
 	}
 
 	public synchronized void addNotification(NotificationType type, String username, Map<String, Object> data) {
+		logger.info("Adding notification of type {} for user {} with data {}", type, username, data);
 		addNotification(new NotificationData(username, type.name(), data));
 	}
 
@@ -139,6 +143,7 @@ public class NotificationService {
 	}
 
 	public synchronized void syncSendersAndLocations() throws IOException {
+		logger.info("Syncing senders and locations");
 		Set<String> missingInstances = new HashSet<>(notificationSenders.keySet());
 
 		RestResponse<List<InstanceData>> allInstancesResp = instanceServiceClient.getAllInstances();
@@ -166,6 +171,7 @@ public class NotificationService {
 	}
 
 	public synchronized void resendUnsentMessages() {
+		logger.info("Resending unsent messages");
 		List<NotificationData> unsentMessages = new ArrayList<>(unsentNotifications);
 		unsentNotifications.clear();
 
