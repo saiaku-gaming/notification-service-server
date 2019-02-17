@@ -1,15 +1,14 @@
 package com.valhallagame.notificationservice.service;
 
-import java.util.List;
-
+import com.valhallagame.notificationservice.model.RegisteredServer;
+import com.valhallagame.notificationservice.repository.RegisteredServerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.valhallagame.notificationservice.model.RegisteredServer;
-import com.valhallagame.notificationservice.repository.RegisteredServerRepository;
+import java.util.List;
 
 @Service
 public class RegisteredServerService {
@@ -20,14 +19,17 @@ public class RegisteredServerService {
 	private RegisteredServerRepository registeredServerRepository;
 
 	public RegisteredServer saveRegisteredServer(RegisteredServer registeredServer) {
+		logger.info("Saving registered server {}", registeredServer);
 		return registeredServerRepository.save(registeredServer);
 	}
 
 	public void deleteRegisteredServer(RegisteredServer registeredServer) {
+		logger.info("Deleting registered server {}", registeredServer);
 		registeredServerRepository.delete(registeredServer);
 	}
 
 	public void deleteRegisteredServer(String gameSessionId) {
+		logger.info("Deleting registered server with game session id {}", gameSessionId);
 		try {
 			registeredServerRepository.delete(gameSessionId);
 		} catch (EmptyResultDataAccessException e){
@@ -36,6 +38,7 @@ public class RegisteredServerService {
 	}
 
 	public List<RegisteredServer> getAllRegisteredServers() {
+		logger.info("Getting all registered servers");
 		return registeredServerRepository.findAll();
 	}
 
