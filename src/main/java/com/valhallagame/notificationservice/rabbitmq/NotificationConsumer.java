@@ -33,6 +33,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.FRIENDCHANGE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Friend notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -48,6 +50,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.WARDROBE_ITEM_ADDED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Add Wardrobe Item notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -63,6 +67,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.TRAIT_LOCKED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Lock Trait notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -78,6 +84,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.TRAIT_UNLOCKED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Unlock Trait notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -92,6 +100,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.FEAT_ADDED, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Feat Add notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -106,6 +116,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.FEAT_REMOVED, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Feat Remove notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -120,6 +132,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.FRIEND_ONLINE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Friend Online notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -134,6 +148,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.FRIEND_OFFLINE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Friend Offline notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -152,6 +168,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.PARTYCHANGE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Party notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -167,6 +185,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.PARTY_PERSON_ONLINE, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Party Person Online notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -182,6 +202,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.PARTY_PERSON_OFFLINE, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Party Person Offline notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -197,6 +219,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.PARTY_RECEIVED_INVITE, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Invite Party notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -212,6 +236,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.PERSONCHANGE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Person notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -227,6 +253,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.CHAT_MESSAGE_RECEIVED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Chat notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -241,6 +269,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.DUNGEONACTIVE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Instance notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -255,6 +285,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addNotification(NotificationType.DUNGEON_QUEUED, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Dungeon Queued notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -285,6 +317,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.DUNGEON_FINISHED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Instance Dungeon Finished notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -300,6 +334,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.QUEUE_PLACEMENT_FULFILLED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Queue Placement Fulfilled notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -314,6 +350,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.addPersonServerLocation(message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Person Login notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -328,6 +366,8 @@ public class NotificationConsumer {
 
 		try {
 			notificationService.removePersonServerLocation(message.getUsername());
+		} catch (Exception e) {
+			logger.error("Error while processing Person Logout notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -343,6 +383,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.FRIEND_RECEIVED_INVITE, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Friend Received Invite notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -358,6 +400,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.RECIPE_ADDED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Add Recipe notification", e);
 		} finally {
 			MDC.clear();
 		}
@@ -373,6 +417,8 @@ public class NotificationConsumer {
 		try {
 			notificationService.addNotification(NotificationType.RECIPE_REMOVED, message.getUsername(),
 					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Remove Recipe notification", e);
 		} finally {
 			MDC.clear();
 		}
