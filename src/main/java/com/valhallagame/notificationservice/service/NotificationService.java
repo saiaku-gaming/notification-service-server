@@ -171,10 +171,12 @@ public class NotificationService {
 	}
 
 	public synchronized void resendUnsentMessages() {
-		logger.info("Resending unsent messages");
 		List<NotificationData> unsentMessages = new ArrayList<>(unsentNotifications);
 		unsentNotifications.clear();
 
+        if (!unsentMessages.isEmpty()) {
+            logger.info("Resending unsent messages: {}", unsentMessages);
+        }
 		for (NotificationData notificationData : unsentMessages) {
 			if (notificationData.getRetries() <= 10) {
 				addNotification(notificationData);
