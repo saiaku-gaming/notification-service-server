@@ -91,7 +91,7 @@ public class NotificationService {
 	}
 
 	public void registerNotificationListener(String gameSessionId, String address, Integer port) {
-		logger.info("Registering notification listener for game session id {} address {} port", gameSessionId, address, port);
+        logger.info("Registering notification listener for game session id {} address {}:{}", gameSessionId, address, port);
 		RegisteredServer registeredServer = new RegisteredServer(gameSessionId, address, port);
 		registeredServerService.saveRegisteredServer(registeredServer);
 
@@ -171,10 +171,12 @@ public class NotificationService {
 	}
 
 	public synchronized void resendUnsentMessages() {
-		logger.info("Resending unsent messages");
 		List<NotificationData> unsentMessages = new ArrayList<>(unsentNotifications);
 		unsentNotifications.clear();
 
+        if (!unsentMessages.isEmpty()) {
+            logger.info("Resending unsent messages: {}", unsentMessages);
+        }
 		for (NotificationData notificationData : unsentMessages) {
 			if (notificationData.getRetries() <= 10) {
 				addNotification(notificationData);

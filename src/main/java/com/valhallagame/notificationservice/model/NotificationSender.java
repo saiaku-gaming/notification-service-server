@@ -5,6 +5,7 @@ import com.valhallagame.notificationservice.message.NotificationData;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -12,11 +13,10 @@ import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Data
 public class NotificationSender {
-
-	private static final String SOCKET_FAILURE = "Socket failure";
 
 	private static final Logger logger = LoggerFactory.getLogger(NotificationSender.class);
 
@@ -50,7 +50,7 @@ public class NotificationSender {
 				logger.info("send notification null or close");
 				open();
 			} else if (System.currentTimeMillis() > (lastHeartbeat + FLATLINE_TIME_MS)) {
-				logger.info("flatline detected");
+                logger.warn("flatline detected when trying to send message to {}:{}", address, port);
 				close();
 				logger.info("reconnecting to: {}:{}", address, port);
 				open();
@@ -63,7 +63,7 @@ public class NotificationSender {
 			logger.info("unable to reconnect to: {}:{}, unregistering listener", address, port);
 			return false;
 		} catch (IOException e) {
-			logger.error(SOCKET_FAILURE, e);
+            logger.error(String.format("Socket failure while trying to send notification to %s:%s with message %s", address, port, message), e);
 			return false;
 		}
 
@@ -74,7 +74,9 @@ public class NotificationSender {
 		logger.info("Trying To Open: {}:{}", address, port);
 		socket = new Socket(address, port);
 		writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+        Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
 		heartbeatThread = new Thread(() -> {
+            MDC.setContextMap(copyOfContextMap);
 			try {
 				while (!heartbeatThread.isInterrupted()) {
 					int beat = socket.getInputStream().read();
@@ -83,7 +85,7 @@ public class NotificationSender {
 					}
 				}
 			} catch (IOException e) {
-				logger.error(SOCKET_FAILURE, e);
+                logger.error(String.format("Socket failure while trying to open %s:%s", address, port), e);
 			}
 		});
 		heartbeatThread.start();
@@ -101,7 +103,7 @@ public class NotificationSender {
 			try {
 				socket.close();
 			} catch (IOException e) {
-				logger.error(SOCKET_FAILURE, e);
+                logger.error(String.format("Socket failure while trying to close %s:%s", address, port), e);
 			}
 		}
 	}
