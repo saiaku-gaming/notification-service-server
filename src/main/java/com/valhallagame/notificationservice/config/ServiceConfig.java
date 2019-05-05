@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 public class ServiceConfig {
 	@Bean
 	public InstanceServiceClient instanceServiceClient() {
-		InstanceServiceClient.init("http://instance-service.instance-service:" + DefaultServicePortMappings.INSTANCE_SERVICE_PORT);
+		InstanceServiceClient.init("http://instance-service:" + DefaultServicePortMappings.INSTANCE_SERVICE_PORT);
 		return InstanceServiceClient.get();
 	}
 }
