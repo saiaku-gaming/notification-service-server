@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static com.valhallagame.notificationservice.model.NotificationType.*;
+
 @Component
 public class NotificationConsumer {
 	private static final Logger logger = LoggerFactory.getLogger(NotificationConsumer.class);
@@ -155,24 +157,59 @@ public class NotificationConsumer {
 		}
 	}
 
-	@RabbitListener(queues = { "#{notificationPartyCancelInviteQueue.name}",
-			"#{notificationPartyAcceptInviteQueue.name}", "#{notificationPartyDeclineInviteQueue.name}",
-			"#{notificationPartySentInviteQueue.name}", "#{notificationPartyLeaveQueue.name}",
-			"#{notificationPartyKickFromPartyQueue.name}", "#{notificationPartyPromoteLeaderQueue.name}",
-			"#{notificationPartySelectCharacterQueue.name}" })
-	public void receivePartyNotification(NotificationMessage message) {
+	private void receivePartyNotification(NotificationMessage message, NotificationType notificationType) {
 		MDC.put("service_name", appName);
 		MDC.put("request_id", message.getData().get("requestId") != null ? (String)message.getData().get("requestId") : UUID.randomUUID().toString());
 
 		logger.info("Received Party notification with message {}", message);
 
 		try {
-			notificationService.addNotification(NotificationType.PARTYCHANGE, message.getUsername(), message.getData());
+			notificationService.addNotification(notificationType, message.getUsername(), message.getData());
 		} catch (Exception e) {
 			logger.error("Error while processing Party notification", e);
 		} finally {
 			MDC.clear();
 		}
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyCancelInviteQueue.name}"})
+	public void receivePartyCancelInviteNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_CANCEL_INVITE);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyAcceptInviteQueue.name}"})
+	public void receivePartyAcceptInviteNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_ACCEPT_INVITE);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyDeclineInviteQueue.name}"})
+	public void receivePartyDeclineInviteNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_DECLINE_INVITE);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartySentInviteQueue.name}"})
+	public void receivePartySentInviteNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_SENT_INVITE);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyLeaveQueue.name}"})
+	public void receivePartyLeaveNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_LEAVE);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyKickFromPartyQueue.name}"})
+	public void receivePartyKickFromPartyNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_KICK_FROM_PARTY);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartyPromoteLeaderQueue.name}"})
+	public void receivePartyPromoteLeaderNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_PROMOTE_LEADER);
+	}
+
+	@RabbitListener(queues = {"#{notificationPartySelectCharacterQueue.name}"})
+	public void receivePartySelectCharacterNotification(NotificationMessage message) {
+		receivePartyNotification(message, PARTY_SELECT_CHARACTER);
 	}
 
 	@RabbitListener(queues = { "#{notificationPartyPersonOnlineQueue.name}" })
