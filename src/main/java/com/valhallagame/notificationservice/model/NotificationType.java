@@ -1,7 +1,14 @@
 package com.valhallagame.notificationservice.model;
 
 public enum NotificationType {
-    PARTYCHANGE,
+    PARTY_CANCEL_INVITE,
+    PARTY_ACCEPT_INVITE,
+    PARTY_DECLINE_INVITE,
+    PARTY_SENT_INVITE,
+    PARTY_LEAVE,
+    PARTY_KICK_FROM_PARTY,
+    PARTY_PROMOTE_LEADER,
+    PARTY_SELECT_CHARACTER,
     FRIENDCHANGE,
     REWARDCHANGE,
     CHATCHANGE,
