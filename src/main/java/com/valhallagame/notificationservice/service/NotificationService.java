@@ -31,6 +31,9 @@ public class NotificationService {
 	private static ConcurrentLinkedQueue<NotificationData> unsentNotifications = new ConcurrentLinkedQueue<>();
 
 	private final RegisteredServerService registeredServerService;
+    private static final int NOTIFICATION_DEFAULT_PORT = 8990;
+    private static final int UNREAL_DEFAULT_PORT = 7777;
+    private static final int NOTIFICATION_PORT_OFFSET = NOTIFICATION_DEFAULT_PORT - UNREAL_DEFAULT_PORT;
 
 	@Autowired
 	public NotificationService(
@@ -155,7 +158,8 @@ public class NotificationService {
 				if (!missingInstances.remove(instance.getId())) {
 					logger.info("Unable to find instance: " + instance.getId() + " in: " + missingInstances.toString());
 					logger.info("Instance not registered, registering now");
-					registerNotificationListener(instance.getId(), instance.getAddress(), instance.getPort());
+                    // instance.getPort is unreal port number, notification port is always a set number above it.
+                    registerNotificationListener(instance.getId(), instance.getAddress(), NOTIFICATION_PORT_OFFSET + instance.getPort());
 				}
 			}
 		} else {

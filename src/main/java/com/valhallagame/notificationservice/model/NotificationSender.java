@@ -76,7 +76,9 @@ public class NotificationSender {
 		writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
         Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
 		heartbeatThread = new Thread(() -> {
-            MDC.setContextMap(copyOfContextMap);
+            if (copyOfContextMap != null) {
+                MDC.setContextMap(copyOfContextMap);
+            }
 			try {
 				while (!heartbeatThread.isInterrupted()) {
 					int beat = socket.getInputStream().read();
