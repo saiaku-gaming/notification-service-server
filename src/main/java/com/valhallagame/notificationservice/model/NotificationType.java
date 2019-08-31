@@ -32,7 +32,9 @@ public enum NotificationType {
     TRAIT_LOCKED,
     TRAIT_UNLOCKED,
     RECIPE_ADDED,
-    RECIPE_REMOVED;
+    RECIPE_REMOVED,
+    CURRENCY_ADDED,
+    CURRENCY_REMOVED;
 
     public String getValue() {
         return this.name();
