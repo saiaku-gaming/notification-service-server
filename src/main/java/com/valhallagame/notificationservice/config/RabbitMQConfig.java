@@ -493,6 +493,37 @@ public class RabbitMQConfig {
                 .with(RabbitMQRouting.Recipe.REMOVE);
     }
 
+	/*************** CURRENCY ***************/
+
+	@Bean
+	public DirectExchange currencyExchange() {
+		return new DirectExchange(RabbitMQRouting.Exchange.CURRENCY.name());
+	}
+
+	@Bean
+	public Queue notificationAddCurrencyQueue() {
+		return new Queue("notificationAddCurrencyQueue");
+	}
+
+	@Bean
+	public Queue notificationRemoveCurrencyQueue() {
+		return new Queue("notificationRemoveCurrencyQueue");
+	}
+
+	@Bean
+	public Binding bindingRecipeQueueAddCurrency(DirectExchange currencyExchange,
+											   Queue notificationAddCurrencyQueue) {
+		return BindingBuilder.bind(notificationAddCurrencyQueue).to(currencyExchange)
+				.with(RabbitMQRouting.Currency.ADD);
+	}
+
+	@Bean
+	public Binding bindingRecipeQueueRemoveCurrency(DirectExchange currencyExchange,
+												  Queue notificationRemoveCurrencyQueue) {
+		return BindingBuilder.bind(notificationRemoveCurrencyQueue).to(currencyExchange)
+				.with(RabbitMQRouting.Currency.REMOVE);
+	}
+
 	/*************** GENERAL CONFIG ***************/
 
 	@Bean

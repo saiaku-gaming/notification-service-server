@@ -460,4 +460,38 @@ public class NotificationConsumer {
 			MDC.clear();
 		}
 	}
+
+	@RabbitListener(queues = {"#{notificationAddCurrencyQueue.name}"})
+	public void receiveAddCurrency(NotificationMessage message) {
+		MDC.put("service_name", appName);
+		MDC.put("request_id", message.getData().get("requestId") != null ? (String)message.getData().get("requestId") : UUID.randomUUID().toString());
+
+		logger.info("Received add currency notification with message {}", message);
+
+		try {
+			notificationService.addNotification(NotificationType.CURRENCY_ADDED, message.getUsername(),
+					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Add Currency notification", e);
+		} finally {
+			MDC.clear();
+		}
+	}
+
+	@RabbitListener(queues = {"#{notificationRemoveCurrencyQueue.name}"})
+	public void receiveRemoveCurrency(NotificationMessage message) {
+		MDC.put("service_name", appName);
+		MDC.put("request_id", message.getData().get("requestId") != null ? (String)message.getData().get("requestId") : UUID.randomUUID().toString());
+
+		logger.info("Received remove currency notification with message {}", message);
+
+		try {
+			notificationService.addNotification(NotificationType.CURRENCY_REMOVED, message.getUsername(),
+					message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Remove Currency notification", e);
+		} finally {
+			MDC.clear();
+		}
+	}
 }
