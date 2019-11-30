@@ -42,6 +42,22 @@ public class NotificationConsumer {
 		}
 	}
 
+	@RabbitListener(queues = {"#{notificationFriendCancelInviteQueue.name}"})
+	public void receiveFriendCancelNotification(NotificationMessage message) {
+		MDC.put("service_name", appName);
+		MDC.put("request_id", message.getData().get("requestId") != null ? (String) message.getData().get("requestId") : UUID.randomUUID().toString());
+
+		logger.info("Received friend notification with message {}", message);
+
+		try {
+			notificationService.addNotification(NotificationType.FRIEND_CANCELED_INVITE, message.getUsername(), message.getData());
+		} catch (Exception e) {
+			logger.error("Error while processing Friend notification", e);
+		} finally {
+			MDC.clear();
+		}
+	}
+
 	@RabbitListener(queues = { "#{notificationAddWardrobeItemQueue.name}" })
 	public void receiveAddWardrobeItem(NotificationMessage message) {
 		MDC.put("service_name", appName);
