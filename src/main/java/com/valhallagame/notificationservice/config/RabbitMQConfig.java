@@ -97,6 +97,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue notificationFriendCancelInviteQueue() {
+		return new Queue("notificationFriendCancelInviteQueue");
+	}
+
+	@Bean
 	public Queue notificationFriendSentInviteQueue() {
 		return new Queue("notificationFriendSentInviteQueue");
 	}
@@ -110,6 +115,7 @@ public class RabbitMQConfig {
 	public Queue notificationFriendOfflineQueue() {
 		return new Queue("notificationFriendOfflineQueue");
 	}
+
 
 	@Bean
 	public Binding bindingFriendAdd(DirectExchange friendExchange, Queue notificationFriendAddQueue) {
@@ -134,6 +140,13 @@ public class RabbitMQConfig {
 			Queue notificationFriendDeclineInviteQueue) {
 		return BindingBuilder.bind(notificationFriendDeclineInviteQueue).to(friendExchange)
 				.with(RabbitMQRouting.Friend.DECLINE_INVITE);
+	}
+
+	@Bean
+	public Binding bindingFriendCancelInvite(DirectExchange friendExchange,
+											 Queue notificationFriendCancelInviteQueue) {
+		return BindingBuilder.bind(notificationFriendCancelInviteQueue).to(friendExchange)
+				.with(RabbitMQRouting.Friend.CANCEL_INVITE);
 	}
 
 	@Bean
